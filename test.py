@@ -7,8 +7,9 @@ import numpy as np
 from skimage.io import imshow
 
 from sklearn.preprocessing import normalize
+from sklearn.neighbors import KNeighborsClassifier
 
-from pickle import dump
+from pickle import dump, load
 
 from library.utils import trace_border
 from library.utils import border_curvature
@@ -22,8 +23,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import train_test_split
 
 from library.data_utils import load_database
-from library.feature_extraction import skeleton_distances_histogram
-from library.feature_extraction import preprocess_image
+from library.feature_extraction import extract_features
 
 
 if __name__ == '__main__':
@@ -59,24 +59,33 @@ if __name__ == '__main__':
     # plt.show()
 
     # Tests for features extraction pipeline
-    X = []
-    print("FEATURE EXTRACTION....")
-    for i, image in enumerate(images):
-        preprocessed = preprocess_image(image)
-        feat = skeleton_distances_histogram(preprocessed)
-        X.append(feat)
+    # X = []
+    # print("FEATURE EXTRACTION....")
+    # for i, image in enumerate(images):
+    #     X.append(extract_features(image))
 
     # -------------
     # Machine learning
-    X = np.array(X)
-    y = np.array(labels)
+    # X = np.array(X)
+    # y = np.array(labels)
 
-    dump(X, open("X", "wb"))
-    dump(y, open("y", "wb"))
+    # dump(X, open("X", "wb"))
+    # dump(y, open("y", "wb"))
+
+    X = load(open("X", "rb"))
+    y = load(open("y", "rb"))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
 
+    print("\nKNeighborsClassifier:")
+    clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=20))
+    print("TRAINING....")
+    clf.fit(X_train, y_train)
+    print("SCORE:")
+    print(clf.score(X_test, y_test))
+
+    print("\nNaive Bayes:")
     clf = OneVsRestClassifier(GaussianNB())
     print("TRAINING....")
     clf.fit(X_train, y_train)
