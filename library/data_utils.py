@@ -13,6 +13,7 @@ def load_database(data_path, labels_file):
     labels = np.genfromtxt(labels_file, delimiter=',', dtype=str)
     # because of space after comma we read redundant empty column
     labels = np.array([l[0] for l in labels])
+    print("%s LABELS" % str(np.unique(labels).shape[0]))
 
     files = list()
     for (dirpath, dirnames, filenames) in walk(data_path):
@@ -34,4 +35,7 @@ def load_database(data_path, labels_file):
             # if name does not match our regexp or label is not in the list
             # of classes - not read from database
             continue
+
+    print("%d DISTINCT LABELS FOUND IN DATABASE" % np.unique(data_labels).shape)
+
     return (data_images, data_labels)

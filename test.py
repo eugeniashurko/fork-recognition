@@ -60,32 +60,32 @@ if __name__ == '__main__':
     # plt.show()
 
     # Tests for features extraction pipeline
-    X = []
-    print("FEATURE EXTRACTION....")
-    for i, image in enumerate(images):
-        X.append(extract_features(image))
+    # X = []
+    # print("FEATURE EXTRACTION....")
+    # for i, image in enumerate(images):
+    #     X.append(extract_features(image))
 
-    # -------------
-    # Machine learning
-    X = np.array(X)
-    y = np.array(labels)
+    # # -------------
+    # # Machine learning
+    # X = np.array(X)
+    # y = np.array(labels)
 
-    dump(X, open("X", "wb"))
-    dump(y, open("y", "wb"))
+    # dump(X, open("X", "wb"))
+    # dump(y, open("y", "wb"))
 
-    # X = load(open("X", "rb"))
-    # y = load(open("y", "rb"))
+    X = load(open("X", "rb"))
+    y = load(open("y", "rb"))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
 
-    print("\nKNeighborsClassifier:")
-    print("+++++++++++++++++++++")
-    clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=20))
-    print("TRAINING....")
-    clf.fit(X_train, y_train)
-    print("SCORE:")
-    print(clf.score(X_test, y_test))
+    # print("\nKNeighborsClassifier:")
+    # print("+++++++++++++++++++++")
+    # clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=20))
+    # print("TRAINING....")
+    # clf.fit(X_train, y_train)
+    # print("SCORE:")
+    # print(clf.score(X_test, y_test))
 
     print("\nNaive Bayes:")
     print("+++++++++++++")
@@ -95,10 +95,13 @@ if __name__ == '__main__':
     print("SCORE:")
     print(clf.score(X_test, y_test))
 
-    print("\nLinear SVC:")
-    print("+++++++++++++")
-    clf = OneVsRestClassifier(LinearSVC())
-    print("TRAINING....")
-    clf.fit(X_train, y_train)
-    print("SCORE:")
-    print(clf.score(X_test, y_test))
+    # RETUNS PROBA TO BELONG TO CLASSES
+    print(clf.predict_proba(X_test).shape)
+
+    # print("\nLinear SVC:")
+    # print("+++++++++++++")
+    # clf = OneVsRestClassifier(LinearSVC())
+    # print("TRAINING....")
+    # clf.fit(X_train, y_train)
+    # print("SCORE:")
+    # print(clf.score(X_test, y_test))
