@@ -21,6 +21,7 @@ from library.utils import smooth_border
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import train_test_split
+from sklearn.svm import LinearSVC
 
 from library.data_utils import load_database
 from library.feature_extraction import extract_features
@@ -59,26 +60,27 @@ if __name__ == '__main__':
     # plt.show()
 
     # Tests for features extraction pipeline
-    # X = []
-    # print("FEATURE EXTRACTION....")
-    # for i, image in enumerate(images):
-    #     X.append(extract_features(image))
+    X = []
+    print("FEATURE EXTRACTION....")
+    for i, image in enumerate(images):
+        X.append(extract_features(image))
 
     # -------------
     # Machine learning
-    # X = np.array(X)
-    # y = np.array(labels)
+    X = np.array(X)
+    y = np.array(labels)
 
-    # dump(X, open("X", "wb"))
-    # dump(y, open("y", "wb"))
+    dump(X, open("X", "wb"))
+    dump(y, open("y", "wb"))
 
-    X = load(open("X", "rb"))
-    y = load(open("y", "rb"))
+    # X = load(open("X", "rb"))
+    # y = load(open("y", "rb"))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
 
     print("\nKNeighborsClassifier:")
+    print("+++++++++++++++++++++")
     clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=20))
     print("TRAINING....")
     clf.fit(X_train, y_train)
@@ -86,7 +88,16 @@ if __name__ == '__main__':
     print(clf.score(X_test, y_test))
 
     print("\nNaive Bayes:")
+    print("+++++++++++++")
     clf = OneVsRestClassifier(GaussianNB())
+    print("TRAINING....")
+    clf.fit(X_train, y_train)
+    print("SCORE:")
+    print(clf.score(X_test, y_test))
+
+    print("\nLinear SVC:")
+    print("+++++++++++++")
+    clf = OneVsRestClassifier(LinearSVC())
     print("TRAINING....")
     clf.fit(X_train, y_train)
     print("SCORE:")
