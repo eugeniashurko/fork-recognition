@@ -7,6 +7,7 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.morphology import medial_axis
 from skimage.measure import label
+from skimage.transform import (hough_line, probabilistic_hough_line)
 
 from scipy import interpolate
 from scipy.interpolate import UnivariateSpline
@@ -233,3 +234,10 @@ def curvature_splines(x, y=None, error=0.1):
     y2 = fy.derivative(2)(t)
     curvature = (x1 * y2 - y1 * x2) / np.power(x1 ** 2 + y1 ** 2, 3 / 2)
     return curvature
+
+
+def skeleton_lines(skeleton):
+    h, theta, d = hough_line(skeleton)
+    lines = probabilistic_hough_line(skeleton, threshold=10, line_length=10,
+                                     line_gap=10)
+    return lines
