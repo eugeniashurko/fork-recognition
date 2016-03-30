@@ -24,18 +24,18 @@ from library.feature_extraction import extract_features
 from library.feature_extraction import preprocess_image
 
 
-# def custom_test(clf, X, y):
-#     score = 0.0
-#     proba = clf.predict_proba(X)
-#     for i, sample_proba in enumerate(proba):
-#         classes = np.argsort(sample_proba)[:10]
-#         labels = clf.classes_[classes]
-#         print(y[i])
-#         print(labels)
-#         if y[i] in labels:
-#             score += 1.0
-#     print(score)
-#     return score / proba.shape[0]
+def custom_test(clf, X, y):
+     score = 0.0
+     proba = clf.predict_proba(X)
+     for i, sample_proba in enumerate(proba):
+         classes = np.argsort(sample_proba)[::-1][:10]
+         labels = clf.classes_[classes]
+         # print(y[i])
+         # print(labels)
+         if y[i] in labels:
+             score += 1.0
+     print(score)
+     return score / proba.shape[0]
 
 
 if __name__ == '__main__':
@@ -115,8 +115,8 @@ if __name__ == '__main__':
     clf.fit(X_train, y_train)
     print("SCORE:")
     print(clf.score(X_test, y_test))
-    # print("TEACHERS TEST:")
-    # print(custom_test(clf, X_test, y_test))
+    print("TEACHERS TEST:")
+    print(custom_test(clf, X_test, y_test))
 
     print("\nLinear SVC:")
     print("+++++++++++++")
