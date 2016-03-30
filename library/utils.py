@@ -33,15 +33,16 @@ CONNECTIVITY_INC = {
 }
 
 
-def pad_image(im, color="b"):
+def pad_image(im):
     """Pad the image by one pixel."""
-    if color == "b":
-        padded_im = np.array(
-            [np.concatenate([[0], row, [0]]) for row in im], dtype=np.uint8)
-        new_row = np.zeros((1, padded_im.shape[1]), dtype=np.uint8)
-        padded_im = np.concatenate([new_row, padded_im, new_row])
-    else:
-        raise ValueError("Padding is not implemented for thes color")
+    color = im[0][0]
+    padded_im = np.array(
+        [np.concatenate([[color], row, [color]]) for row in im], dtype=np.uint8)
+    new_row = np.array(
+        [color for _ in range(padded_im.shape[1])],
+        dtype=np.uint8,
+        ndmin=2)
+    padded_im = np.concatenate([new_row, padded_im, new_row])
     return padded_im
 
 
@@ -137,9 +138,11 @@ def fill_border(im, border, point, color=255):
 def fill_foreground(image):
     """."""
     img_labels = label(image)
-    label_count = np.bincount(img_labels.ravel())
-    background = np.argmax(label_count)
+    # label_count = np.bincount(img_labels.ravel())
+    # background = np.argmax(label_count)
+    background = img_labels[0][0]
     filled_image = image
+    filled_image[img_labels == background] = 0
     filled_image[img_labels != background] = 255
     return filled_image
 

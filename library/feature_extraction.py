@@ -3,6 +3,10 @@ import numpy as np
 
 from sklearn.preprocessing import normalize
 
+from skimage.measure import perimeter
+from skimage.measure import regionprops
+from skimage.measure import label
+
 from library.utils import fill_foreground
 from library.utils import pad_image
 from library.utils import smooth_border
@@ -45,12 +49,28 @@ def border_curvature_histogram(image):
     return norm_frequencies
 
 
+def area_perimeter_ratio(image):
+    # make image binary
+    new_im = image
+    new_im[new_im > 0] = 1
+    per = perimeter(new_im)
+    lbs = label(new_im)
+    properties = regionprops(lbs)
+    if len(properties) > 0:
+        ratio = properties[0].area / (per * per)
+    else:
+        ratio = 0
+    return ratio
+
+
 def extract_features(image):
     im = preprocess_image(image)
     skeleton_dist_hist = skeleton_distances_histogram(im)
     curv_hist = border_curvature_histogram(im)
+    ap_ratio = area_perimeter_ratio(im)
     features = np.concatenate((
         skeleton_dist_hist,
-        curv_hist
+        curv_hist,
+        [ap_ratio]
     ))
     return features
