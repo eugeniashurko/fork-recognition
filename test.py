@@ -84,19 +84,19 @@ if __name__ == '__main__':
     #     # plt.savefig("lines/%s_%i" % (labels[i], i))
     #     # plt.close()
 
-         # im = preprocess_image(image)
-         # X.append(extract_features(im))
+         im = preprocess_image(image)
+         X.append(extract_features(im))
 
     # # -------------
     # # Machine learning
     X = np.array(X)
     y = np.array(labels)
 
-    # dump(X, open("X", "wb"))
-    # dump(y, open("y", "wb"))
+    dump(X, open("X", "wb"))
+    dump(y, open("y", "wb"))
 
-    X = load(open("X", "rb"))
-    y = load(open("y", "rb"))
+    # X = load(open("X", "rb"))
+    # y = load(open("y", "rb"))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
