@@ -2,7 +2,7 @@
 zmodload -i zsh/mathfunc
 
 ##YOUR SIMILARITY PROG NAME
-SIMILARYPROG="python3 vector.py"
+SIMILARYPROG="python3 distance.py"
 
 #nb of source images to test
 NBIMGTESTS=10
