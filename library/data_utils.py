@@ -21,7 +21,7 @@ def load_database(data_path, labels_file):
 
     data_images = list()
     data_labels = list()
-    label_from_name = r"([a-zA-z]+)[-_]\d+.pgm"
+    label_from_name = r"([a-zA-z0-9]+)[-_]\d+.pgm"
 
     # here we load all the images and find their label from filename
     for f in files:
@@ -54,7 +54,7 @@ def load_labels(data_path, labels_file):
         files = filenames
 
     data_labels = list()
-    label_from_name = r"([a-zA-z]+)[-_]\d+.pgm"
+    label_from_name = r"([a-zA-z0-9]+)[-_]\d+.pgm"
 
     # here we load all the images and find their label from filename
     for f in files:
