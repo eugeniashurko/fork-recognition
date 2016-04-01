@@ -1,8 +1,6 @@
 """."""
 import numpy as np
 
-from sklearn.preprocessing import normalize
-
 from skimage.measure import perimeter
 from skimage.measure import regionprops
 from skimage.measure import label
@@ -14,6 +12,10 @@ from library.utils import medial_axis_skeleton
 from library.utils import curvature_splines
 from library.utils import trace_border
 from library.utils import skeleton_lines
+from library.utils import end_points
+from library.utils import branched_points
+
+import mahotas as mh
 
 
 def preprocess_image(image):
@@ -64,14 +66,16 @@ def shape_measures(image):
         solidity = properties[0].solidity
         extent = properties[0].extent
         major_axis_scaled = properties[0].major_axis_length / per
+        minor_axis_scaled = properties[0].minor_axis_length / per
     else:
         ratio = 0
         solidity = 0
         extent = 0
         major_axis_scaled = 0
+        minor_axis_scaled = 0
 
     # solidity
-    return [ratio, solidity, extent, major_axis_scaled]
+    return [ratio, solidity, extent, major_axis_scaled, minor_axis_scaled]
 
 
 def skeleton_lines_length_hist(image):
@@ -88,26 +92,19 @@ def skeleton_lines_length_hist(image):
     # print(norm_frequencies)
     return norm_frequencies
 
+
 # number of branches of skeleton
 def n_skeleton_branches(image):
-    skeleton = medial_axis_skeleton(image)
-    peaks = 0
-    skeleton[skeleton != 0] = 1
-    for i in range(1, skeleton.shape[0] - 1):
-        for j in range(1, skeleton.shape[1] - 1):
-            skeleton_pixels_in_neighborhood =\
-                skeleton[i - 1][j - 1] +\
-                skeleton[i - 1][j] +\
-                skeleton[i - 1][j + 1] +\
-                skeleton[i][j - 1] +\
-                skeleton[i][j] +\
-                skeleton[i][j + 1] +\
-                skeleton[i][j - 1] +\
-                skeleton[i][j] +\
-                skeleton[i][j + 1]
-            if skeleton_pixels_in_neighborhood == 1:
-                peaks += 1
-    return peaks
+    skeleton = mh.thin(image)
+    branches = end_points(skeleton)
+    return (sum(sum(branches != False)))
+
+
+# number of branched points of skeleton
+def n_skeleton_branched_points(image):
+    skeleton = mh.thin(image)
+    b_points = branched_points(skeleton)
+    return (sum(sum(b_points != False)))
 
 
 def extract_features(image):
@@ -116,12 +113,14 @@ def extract_features(image):
     curv_hist = border_curvature_histogram(im)
     measures = shape_measures(im)
     lines_length = skeleton_lines_length_hist(im)
-    # branches = n_skeleton_branches(im)
+    branches = n_skeleton_branches(im)
+    branched_points = n_skeleton_branched_points(im)
     features = np.concatenate((
         skeleton_dist_hist,
         curv_hist,
         measures,
         lines_length,
-        # [branches]
+        np.array([branches]),
+        np.array([branched_points])
     ))
     return features
