@@ -45,58 +45,57 @@ if __name__ == '__main__':
     X = []
     print("FEATURE EXTRACTION....")
     for i, image in enumerate(images):
-    #     # # Plotting the skeletons
-    #     # # ----------------------
-    #     # im = preprocess_image(image)
-    #     # distances_on_skeleton = medial_axis_skeleton(im)
-    #     # fig, (ax1, ax2) = plt.subplots(
-    #     #     1, 2, figsize=(12, 8), sharex=True, sharey=True,
-    #     #     subplot_kw={'adjustable': 'box-forced'})
-    #     # ax1.imshow(im, cmap=plt.cm.gray, interpolation='nearest')
-    #     # ax1.axis('off')
-    #     # ax2.imshow(
-    #     #     distances_on_skeleton,
-    #     #     cmap=plt.cm.spectral,
-    #     #     interpolation='nearest')
-    #     # ax2.contour(im, [0.5], colors='w')
-    #     # ax2.axis('off')
-    #     # fig.tight_layout()
-    #     # plt.savefig("skeletons/%s_%i" % (labels[i], i))
-    #     # plt.close()
+        # # Plotting the skeletons
+        # # ----------------------
+        # im = preprocess_image(image)
+        # distances_on_skeleton = medial_axis_skeleton(im)
+        # fig, (ax1, ax2) = plt.subplots(
+        #     1, 2, figsize=(12, 8), sharex=True, sharey=True,
+        #     subplot_kw={'adjustable': 'box-forced'})
+        # ax1.imshow(im, cmap=plt.cm.gray, interpolation='nearest')
+        # ax1.axis('off')
+        # ax2.imshow(
+        #     distances_on_skeleton,
+        #     cmap=plt.cm.spectral,
+        #     interpolation='nearest')
+        # ax2.contour(im, [0.5], colors='w')
+        # ax2.axis('off')
+        # fig.tight_layout()
+        # plt.savefig("skeletons/%s_%i" % (labels[i], i))
+        # plt.close()
 
-    #     # # Plotting the skeleton lines
-    #     # im = preprocess_image(image)
-    #     # distances_on_skeleton = medial_axis_skeleton(im)
-    #     # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4), sharex=True, sharey=True)
+        # # Plotting the skeleton lines
+        # im = preprocess_image(image)
+        # distances_on_skeleton = medial_axis_skeleton(im)
+        # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4), sharex=True, sharey=True)
 
-    #     # ax1.imshow(distances_on_skeleton, cmap=plt.cm.gray)
-    #     # ax1.set_title('Input image')
-    #     # ax1.set_axis_off()
+        # ax1.imshow(distances_on_skeleton, cmap=plt.cm.gray)
+        # ax1.set_title('Input image')
+        # ax1.set_axis_off()
 
-    #     # lines = skeleton_lines(distances_on_skeleton)
+        # lines = skeleton_lines(distances_on_skeleton)
 
-    #     # for line in lines:
-    #     #     p0, p1 = line
-    #     #     ax2.plot((p0[0], p1[0]), (p0[1], p1[1]))
+        # for line in lines:
+        #     p0, p1 = line
+        #     ax2.plot((p0[0], p1[0]), (p0[1], p1[1]))
 
-    #     # ax2.set_title('Probabilistic Hough')
-    #     # ax2.set_axis_off()
-    #     # plt.savefig("lines/%s_%i" % (labels[i], i))
-    #     # plt.close()
+        # ax2.set_title('Probabilistic Hough')
+        # ax2.set_axis_off()
+        # plt.savefig("lines/%s_%i" % (labels[i], i))
+        # plt.close()
 
-         # im = preprocess_image(image)
-         # X.append(extract_features(im))
+        X.append(extract_features(image))
 
     # # -------------
     # # Machine learning
     X = np.array(X)
     y = np.array(labels)
 
-    # dump(X, open("X", "wb"))
-    # dump(y, open("y", "wb"))
+    dump(X, open("X", "wb"))
+    dump(y, open("y", "wb"))
 
-    X = load(open("X", "rb"))
-    y = load(open("y", "rb"))
+    # X = load(open("X", "rb"))
+    # y = load(open("y", "rb"))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
