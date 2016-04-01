@@ -2,7 +2,7 @@
 zmodload -i zsh/mathfunc
 
 ##YOUR SIMILARITY PROG NAME
-SIMILARYPROG=./naiveDistance
+SIMILARYPROG="python3 vector.py"
 
 #nb of source images to test
 NBIMGTESTS=10
@@ -32,9 +32,9 @@ for ((i=0; i < $NBIMGTESTS; i++)); do
             ANGLE=$((rand48()*3.1415))
             SCALE=$((rand48()*3))
             NOISE=$((rand48()*MAXNOISE))
-            ./imgRotate -i $IMGNAME -o tmp.pgm -a $ANGLE 2>/dev/null
-            ./imgScale -i tmp.pgm -o tmp2.pgm -s $SCALE 2>/dev/null
-            ./imgAddNoise -i tmp2.pgm -o tmp.pgm -n $NOISE 2>/dev/null
+            ./bin/imgRotate -i $IMGNAME -o tmp.pgm -a $ANGLE 2>/dev/null
+            ./bin/imgScale -i tmp.pgm -o tmp2.pgm -s $SCALE 2>/dev/null
+            ./bin/imgAddNoise -i tmp2.pgm -o tmp.pgm -n $NOISE 2>/dev/null
 
             DIST=`$SIMILARYPROG $IMGNAME tmp.pgm`
             sum=$(( $sum + $DIST))
