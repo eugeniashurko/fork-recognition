@@ -2,7 +2,7 @@
 zmodload -i zsh/mathfunc
 
 ##YOUR SIMILARITY PROG NAME
-SIMILARYPROG="python3 distance.py"
+SIMILARYPROG=python3
 
 #nb of source images to test
 NBIMGTESTS=10
@@ -36,7 +36,7 @@ for ((i=0; i < $NBIMGTESTS; i++)); do
             ./bin/imgScale -i tmp.pgm -o tmp2.pgm -s $SCALE 2>/dev/null
             ./bin/imgAddNoise -i tmp2.pgm -o tmp.pgm -n $NOISE 2>/dev/null
 
-            DIST=`$SIMILARYPROG $IMGNAME tmp.pgm`
+            DIST=`$SIMILARYPROG distance.py $IMGNAME tmp.pgm`
             sum=$(( $sum + $DIST))
             variance=$(( $variance + $DIST*$DIST ))
             echo "Similarity= "$DIST
