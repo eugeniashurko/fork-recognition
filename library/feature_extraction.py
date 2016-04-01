@@ -38,7 +38,7 @@ def skeleton_distances_histogram(image):
 def border_curvature_histogram(image): 
     im_dense_border = trace_border(image)
 
-    im_border = [im_dense_border[i] for i in range(len(im_dense_border)) if i % 5 == 0]
+    im_border = [im_dense_border[i] for i in range(len(im_dense_border))] #if i % 5 == 0]
 
     x_im = np.array([x for (x, y) in im_border])
     y_im = np.array([y for (x, y) in im_border])
@@ -62,12 +62,16 @@ def shape_measures(image):
     if len(properties) > 0:
         ratio = properties[0].area / (per * per)
         solidity = properties[0].solidity
+        extent = properties[0].extent
+        major_axis_scaled = properties[0].major_axis_length / per
     else:
         ratio = 0
         solidity = 0
+        extent = 0
+        major_axis_scaled = 0
 
     # solidity
-    return [ratio, solidity]
+    return [ratio, solidity, extent, major_axis_scaled]
 
 
 def skeleton_lines_length_hist(image):
@@ -116,8 +120,8 @@ def extract_features(image):
     features = np.concatenate((
         skeleton_dist_hist,
         curv_hist,
-        # measures,
-        # lines_length,
+        measures,
+        lines_length,
         # [branches]
     ))
     return features

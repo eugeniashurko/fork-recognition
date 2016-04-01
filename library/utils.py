@@ -56,7 +56,7 @@ def trace_border(im, connectivity=4):
 
     background_pixel = padded_im[0][0]
     current_pixel = padded_im[0][0]
-    start = None
+    start = padded_im[0][0]
 
     # find starting pixel
     for i in range(padded_im.shape[0]):
@@ -155,7 +155,7 @@ def sample_border_points(border, size):
     return sampled_border
 
 
-def smooth_border(im, disk_size=5):
+def smooth_border(im, disk_size=7):
     """Smooth the border with median filter."""
     new_im = np.array(im)
     new_im = median(new_im, disk(disk_size))
