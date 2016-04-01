@@ -1,5 +1,13 @@
 \documentclass{article}
 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=25mm,
+ right=20mm,
+ top=20mm,
+ }
+
 \usepackage{exercise}
 \usepackage{enumerate}
 \usepackage{graphicx}
@@ -14,7 +22,7 @@
 
 \title{
 Computational Geometry and Digital Images \\
-Shape Indexing\\
+fork-recognition\\
 Project report
 }
 
@@ -23,10 +31,39 @@ Project report
 \maketitle
 
 
-\section{Border tracing}  
-\section{Building shape descriptor}  
-\section{Shape classification model}  
-\section{Results}
+\section{Introduction}  
 
+\section{Feature Engineering}
+\subsection{Medial Axis}
+
+\includegraphics[scale=0.25]{beetle_281.png}
+\includegraphics[scale=0.25]{deer_79.png}
+
+\vspace{12px}
+
+\includegraphics[scale=0.25]{fork_75.png}
+\includegraphics[scale=0.25]{cup_476.png}
+
+
+\subsubsection{Histogram of distance of the medial axis points from borders}
+\subsubsection{Histogram of length of the medial axis straight lines}
+\subsubsection{Quantitive features of skeleton}
+
+\subsection{Border Curvature}
+\subsubsection{Histogram of border curvature coefficients}
+
+\subsection{Volumetric Features}
+\subsubsection{Scaled area}
+\subsubsection{Solidity and extend}
+\subsubsection{Scaled major and minor axes length}
+ 
+\section{Classification models}
+\subsection{Gaussian Naive Bayes}
+\subsection{K Nearest Neighbours}
+
+\section{Results and Discussions}
+\subsection{Performance}
+\subsection{Robustness and scale/rotation invariance}
+\subsection{Conclusions}
 
 \end{document}
