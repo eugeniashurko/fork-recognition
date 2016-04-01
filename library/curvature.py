@@ -1,3 +1,54 @@
+
+# coding: utf-8
+
+# In[1]:
+
+get_ipython().magic('pylab inline')
+pylab.rcParams['figure.figsize'] = (20.0, 20.0)
+
+
+# In[2]:
+
+import re
+
+from os import walk
+from os.path import join
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from skimage.io import imread, imshow, show
+
+# Read classes from file
+labels = np.genfromtxt('../classes.csv', delimiter=',', dtype=str)
+# because of space after comma we read redundant empty column
+labels = np.array([l[0] for l in labels])
+
+data_path = "../database/"
+files = list()
+for (dirpath, dirnames, filenames) in walk(data_path):
+    files = filenames  
+    
+data_images = list()
+data_labels = list()
+label_from_name = r"([a-zA-z]+)[-_]\d+.pgm"
+
+# here we load all the images and find their label from filename
+for f in files:
+    match = re.match(label_from_name, f)
+    if match:
+        label = match.groups()[0]
+        if label in labels:
+            data_labels.append(label)
+            data_images.append(imread(join(data_path, f), as_grey=True))      
+    else: 
+        # if name does not match our regexp or label is not in the list
+        # of classes - not read from database
+        continue 
+
+
+# In[3]:
+
 """Set of utils for input image processing."""
 import math
 
@@ -7,10 +58,8 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 from skimage.morphology import medial_axis
 from skimage.measure import label
-from skimage.transform import (hough_line, probabilistic_hough_line)
 
 from scipy import interpolate
-from scipy.interpolate import UnivariateSpline
 
 # Dictionary of increments of current pixel coordinates
 # for finding a neighborhood with given connectivity
@@ -34,16 +83,15 @@ CONNECTIVITY_INC = {
 }
 
 
-def pad_image(im):
+def pad_image(im, color="b"):
     """Pad the image by one pixel."""
-    color = im[0][0]
-    padded_im = np.array(
-        [np.concatenate([[color], row, [color]]) for row in im], dtype=np.uint8)
-    new_row = np.array(
-        [color for _ in range(padded_im.shape[1])],
-        dtype=np.uint8,
-        ndmin=2)
-    padded_im = np.concatenate([new_row, padded_im, new_row])
+    if color == "b":
+        padded_im = np.array(
+            [np.concatenate([[0], row, [0]]) for row in im], dtype=np.uint8)
+        new_row = np.zeros((1, padded_im.shape[1]), dtype=np.uint8)
+        padded_im = np.concatenate([new_row, padded_im, new_row])
+    else:
+        raise ValueError("Padding is not implemented for thes color")
     return padded_im
 
 
@@ -56,7 +104,7 @@ def trace_border(im, connectivity=4):
 
     background_pixel = padded_im[0][0]
     current_pixel = padded_im[0][0]
-    start = padded_im[0][0]
+    start = None
 
     # find starting pixel
     for i in range(padded_im.shape[0]):
@@ -139,11 +187,9 @@ def fill_border(im, border, point, color=255):
 def fill_foreground(image):
     """."""
     img_labels = label(image)
-    # label_count = np.bincount(img_labels.ravel())
-    # background = np.argmax(label_count)
-    background = img_labels[0][0]
+    label_count = np.bincount(img_labels.ravel())
+    background = np.argmax(label_count)
     filled_image = image
-    filled_image[img_labels == background] = 0
     filled_image[img_labels != background] = 255
     return filled_image
 
@@ -155,7 +201,7 @@ def sample_border_points(border, size):
     return sampled_border
 
 
-def smooth_border(im, disk_size=7):
+def smooth_border(im, disk_size=5):
     """Smooth the border with median filter."""
     new_im = np.array(im)
     new_im = median(new_im, disk(disk_size))
@@ -169,34 +215,53 @@ def medial_axis_skeleton(im):
     return dist_on_skel
 
 
-def border_curvature(border, w=5):
-    i = w
-    # first_ders = []
-    # second_ders = []
-    known = []
-    curvatures = []
-    while (i != len(border) - w):
-        window = [border[di] for di in range(i - w, i + w + 1)]
-        X = np.sort(np.array([p[1] for p in window]))
-        Y = np.array([p[0] for p in window])
-        Y = np.array([y for (x, y) in sorted(zip(X, Y))])
 
-        try:
-            tck = interpolate.splrep(X, Y, s=3)
-            first_der = interpolate.splev(border[i][1], tck, der=1)
-            second_der = interpolate.splev(border[i][1], tck, der=2)
+# In[4]:
 
-            if not np.isnan(first_der) and not np.isnan(second_der):
-                known.append(border[i])
-                curvatures.append(
-                    second_der / math.pow(1 + first_der * first_der, 3. / 2.))
-            # print("First der: %f" % first_der)
-            # print("Second der: %f" % second_der)
-        except ValueError as e:
-            print(e)
-        i += 1
-    return (known, curvatures)
+def preprocess_image(image):
+    """."""
+    im = pad_image(image)
+    filled_image = fill_foreground(im)
+    smoothed_image = smooth_border(filled_image)
+    return smoothed_image
 
+def preprocess_image_without_smooth(image):
+    """."""
+    im = pad_image(image)
+    filled_image = fill_foreground(im)
+    return filled_image
+
+
+# In[5]:
+
+imshow(data_images[2])
+
+
+# In[6]:
+
+car = data_images[2]
+car_smooth = preprocess_image(car)
+
+
+# In[7]:
+
+imshow(car_smooth)
+
+
+# In[8]:
+
+car_border = trace_border(car_smooth)
+
+width = 12
+height = 12
+fig, ax = plt.subplots()
+ax.imshow(car_smooth, cmap=plt.cm.gray)
+ax.plot([b[1] for b in car_border], [b[0] for b in car_border], color="r", linewidth=5)
+
+
+# In[9]:
+
+from scipy.interpolate import UnivariateSpline
 
 def curvature_splines(x, y=None, error=0.1):
     """Calculate the signed curvature of a 2D curve at each point
@@ -228,16 +293,127 @@ def curvature_splines(x, y=None, error=0.1):
     fx = UnivariateSpline(t, x, k=4, w=1 / np.sqrt(std))
     fy = UnivariateSpline(t, y, k=4, w=1 / np.sqrt(std))
 
-    x1 = fx.derivative(1)(t)
-    x2 = fx.derivative(2)(t)
-    y1 = fy.derivative(1)(t)
-    y2 = fy.derivative(2)(t)
-    curvature = (x1 * y2 - y1 * x2) / np.power(x1 ** 2 + y1 ** 2, 3 / 2)
+    xˈ = fx.derivative(1)(t)
+    xˈˈ = fx.derivative(2)(t)
+    yˈ = fy.derivative(1)(t)
+    yˈˈ = fy.derivative(2)(t)
+    curvature = (xˈ* yˈˈ - yˈ* xˈˈ) / np.power(xˈ** 2 + yˈ** 2, 3 / 2)
     return curvature
 
 
-def skeleton_lines(skeleton):
-    h, theta, d = hough_line(skeleton)
-    lines = probabilistic_hough_line(skeleton, threshold=10, line_length=10,
-                                     line_gap=10)
-    return lines
+# In[10]:
+
+x_car = np.array([x for (x,y) in car_border])
+y_car = np.array([y for (x,y) in car_border])
+
+
+# In[11]:
+
+car_curvature = curvature_splines(x_car, y_car)
+
+
+# In[12]:
+
+car_curvature
+
+
+# In[13]:
+
+from sklearn.preprocessing import normalize
+
+norm_car_curv = normalize(car_curvature, norm='max')
+
+
+# In[14]:
+
+norm_car_curv
+
+
+# In[15]:
+
+pos_car_curv = []
+for x in norm_car_curv[0]:
+    if x>=0:
+        pos_car_curv.append(x)
+    elif x<-1:
+        pos_car_curv.append(1)
+    else:
+        pos_car_curv.append(-x)
+
+
+# In[16]:
+
+pos_car_curv
+
+
+# In[17]:
+
+colors = [(curv, 0.1, 0.1) for curv in pos_car_curv]
+
+
+# In[18]:
+
+width = 12
+height = 12
+fig, ax = plt.subplots()
+ax.imshow(car_smooth, cmap=plt.cm.gray)
+
+ax.scatter([b[1] for b in car_border], [b[0] for b in car_border], c=colors, s=50, marker=',')
+
+
+# In[ ]:
+
+
+
+
+# In[166]:
+
+elephant = preprocess_image(data_images[4])
+
+im = pad_image(data_images[4])
+filled_image = fill_foreground(im)
+imshow(filled_image)
+
+
+# In[210]:
+
+elephant2 = preprocess_image_without_smooth(data_images[32])
+
+el2_dense_border = trace_border(elephant2)
+
+el2_border = [el2_dense_border[i] for i in range(len(el2_dense_border)) if i%5 == 0]
+
+x_el2 = np.array([x for (x,y) in el2_border])
+y_el2 = np.array([y for (x,y) in el2_border])
+curvs_el2 = curvature_splines(x_el2, y_el2)
+
+norm_el2_curv = normalize(curvs_el2, norm='max')
+pos_el2_curv = []
+for x in norm_car_curv[0]:
+    if x>=0:
+        pos_el2_curv.append(x)
+    elif x<-1:
+        pos_el2_curv.append(1)
+    else:
+        pos_el2_curv.append(-x)
+
+colors_el2 = [(curv, 0.1, 0.1) for curv in pos_el2_curv]
+
+
+width = 12
+height = 12
+fig, ax = plt.subplots()
+ax.imshow(elephant2, cmap=plt.cm.gray)
+
+ax.scatter([b[1] for b in el2_border], [b[0] for b in el2_border], c=colors_el2, s=100, marker=',')
+
+
+# In[203]:
+
+imshow(data_images[32])
+
+
+# In[ ]:
+
+
+
