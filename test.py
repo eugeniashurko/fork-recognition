@@ -43,8 +43,8 @@ if __name__ == '__main__':
 
     # Tests for features extraction pipeline
     X = []
-    # print("FEATURE EXTRACTION....")
-    # for i, image in enumerate(images):
+    print("FEATURE EXTRACTION....")
+    for i, image in enumerate(images):
     #     # # Plotting the skeletons
     #     # # ----------------------
     #     # im = preprocess_image(image)
@@ -84,7 +84,8 @@ if __name__ == '__main__':
     #     # plt.savefig("lines/%s_%i" % (labels[i], i))
     #     # plt.close()
 
-    #     X.append(extract_features(image))
+         # im = preprocess_image(image)
+         # X.append(extract_features(im))
 
     # # -------------
     # # Machine learning
