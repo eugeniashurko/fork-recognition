@@ -1,23 +1,25 @@
 """Library test."""
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import cm
+# import matplotlib
+# import matplotlib.pyplot as plt
+# from matplotlib import cm
 
 import numpy as np
-from skimage.io import imshow
-
-from sklearn.preprocessing import normalize
-from sklearn.neighbors import KNeighborsClassifier
+# from skimage.io import imshow
 
 from pickle import dump, load
+# from rosetta.parallel.parallel_easy import imap_easy
 
-from library.utils import medial_axis_skeleton
-from library.utils import skeleton_lines
+# from library.utils import medial_axis_skeleton
+# from library.utils import skeleton_lines
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import train_test_split
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVC
+from sklearn import cross_validation
+from sklearn.grid_search import GridSearchCV
+from sklearn.preprocessing import scale
+from sklearn.neighbors import KNeighborsClassifier
 
 from library.data_utils import load_database
 from library.feature_extraction import extract_features
@@ -40,6 +42,8 @@ def custom_test(clf, X, y):
 
 if __name__ == '__main__':
     images, labels = load_database("database", "classes.csv")
+
+    # X = list(imap_easy(extract_features, images))
 
     # Tests for features extraction pipeline
     X = []
@@ -97,31 +101,85 @@ if __name__ == '__main__':
     X = load(open("X", "rb"))
     y = load(open("y", "rb"))
 
+    # Scale features
+    X = scale(X)
+
+    print("DATA: %d x %d" % X.shape)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=42)
 
-    print("\nKNeighborsClassifier:")
-    print("+++++++++++++++++++++")
-    clf = OneVsRestClassifier(KNeighborsClassifier(n_neighbors=5))
+    print("\nKNeighborsClassifier (5 neighbors):")
+    print("+++++++++++++++++++++++++++++++++++")
+    clf = KNeighborsClassifier(n_neighbors=5, n_jobs=4)
     print("TRAINING....")
-    clf.fit(X_train, y_train)
+    # clf.fit(X_train, y_train)
     print("SCORE:")
-    print(clf.score(X_test, y_test))
+    score = cross_validation.cross_val_score(
+        clf, X, y, cv=5)
+    print(sum(score) / float(len(score)))
+    clf.fit(X_train, y_train)
+
+    print("TEACHERS TEST:")
+    print(custom_test(clf, X_test, y_test))
+
+    print("\nKNeighborsClassifier (20 neighbors):")
+    print("+++++++++++++++++++++++++++++++++++")
+    clf = KNeighborsClassifier(n_neighbors=20, n_jobs=4)
+    print("TRAINING....")
+    # clf.fit(X_train, y_train)
+    print("SCORE:")
+    score = cross_validation.cross_val_score(
+        clf, X, y, cv=5)
+    print(sum(score) / float(len(score)))
+    clf.fit(X_train, y_train)
+
+    print("TEACHERS TEST:")
+    print(custom_test(clf, X_test, y_test))
 
     print("\nNaive Bayes:")
     print("+++++++++++++")
-    clf = OneVsRestClassifier(GaussianNB())
+    clf = OneVsRestClassifier(GaussianNB(), n_jobs=4)
     print("TRAINING....")
-    clf.fit(X_train, y_train)
+
     print("SCORE:")
-    print(clf.score(X_test, y_test))
+    score = cross_validation.cross_val_score(
+        clf, X, y, cv=5)
+    print(sum(score) / float(len(score)))
+    clf.fit(X_train, y_train)
+
     print("TEACHERS TEST:")
     print(custom_test(clf, X_test, y_test))
 
     print("\nLinear SVC:")
-    print("+++++++++++++")
-    clf = OneVsRestClassifier(LinearSVC())
-    print("TRAINING....")
-    clf.fit(X_train, y_train)
+    print("++++++++++++")
+
+    C = 1
+    clf = OneVsRestClassifier(
+        SVC(kernel='linear', C=C, probability=True), n_jobs=4)
+
     print("SCORE:")
-    print(clf.score(X_test, y_test))
+    score = cross_validation.cross_val_score(
+        clf, X, y, cv=5)
+    print(sum(score) / float(len(score)))
+    clf.fit(X_train, y_train)
+
+    print("TEACHERS TEST:")
+    print(custom_test(clf, X_test, y_test))
+
+    print("\n\nSVC RBF kernel:")
+    print("++++++++++++")
+
+    gamma = 0.1
+    C = 10
+    clf = OneVsRestClassifier(
+        SVC(kernel='rbf', C=C, gamma=gamma, probability=True), n_jobs=4)
+
+    print("SCORE:")
+    score = cross_validation.cross_val_score(
+        clf, X, y, cv=5)
+    print(sum(score) / float(len(score)))
+    clf.fit(X_train, y_train)
+
+    print("TEACHERS TEST:")
+    print(custom_test(clf, X_test, y_test))

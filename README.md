@@ -2,7 +2,7 @@
 
 ## Environment configs 
 
-### Requirement
+### Requirements
 
 All requirements are listed in `/requirements.txt`
 

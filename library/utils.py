@@ -396,3 +396,16 @@ def branched_points(skel):
     for t in T:
         bp = bp + mh.morph.hitmiss(skel, t)
     return bp > 0
+
+
+def get_vector(line):
+    return (line[1][0] - line[0][0], line[1][1] - line[0][1])
+
+
+def get_angle(line1, line2):
+    v1 = get_vector(line1)
+    v2 = get_vector(line2)
+    cos = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    if cos >= 1.0:
+        cos = 1
+    return math.acos(cos)

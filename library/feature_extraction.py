@@ -4,6 +4,8 @@ import numpy as np
 from skimage.measure import perimeter
 from skimage.measure import regionprops
 from skimage.measure import label
+from skimage import transform as tf
+
 
 from library.utils import fill_foreground
 from library.utils import pad_image
@@ -14,6 +16,7 @@ from library.utils import trace_border
 from library.utils import skeleton_lines
 from library.utils import end_points
 from library.utils import branched_points
+from library.utils import get_angle
 
 import mahotas as mh
 
@@ -59,8 +62,7 @@ def shape_measures(image):
     per = perimeter(new_im)
     lbs = label(new_im)
     properties = regionprops(lbs)
-
-    # area / perimeter ratio
+    # extract properties of interest
     if len(properties) > 0:
         ratio = properties[0].area / (per * per)
         solidity = properties[0].solidity
@@ -73,8 +75,6 @@ def shape_measures(image):
         extent = 0
         major_axis_scaled = 0
         minor_axis_scaled = 0
-
-    # solidity
     return [ratio, solidity, extent, major_axis_scaled, minor_axis_scaled]
 
 
@@ -89,8 +89,18 @@ def skeleton_lines_length_hist(image):
         norm_frequencies = frequencies / sum(frequencies)
     else:
         norm_frequencies = np.array([0 for i in range(frequencies.shape[0])])
-    # print(norm_frequencies)
-    return norm_frequencies
+
+    # find pairwise angles between skeleton lines
+    # angles = []
+    # for line1 in lines:
+    #     for line2 in lines:
+    #         if line1 != line2:
+    #             angles.append(get_angle(line1, line2))
+    # angles_hist = np.histogram(angles, bins=5)[0]
+
+    return np.concatenate((
+        norm_frequencies,
+        [len(lines)]))
 
 
 # number of branches of skeleton
@@ -107,6 +117,53 @@ def n_skeleton_branched_points(image):
     return (sum(sum(b_points != False)))
 
 
+def centriod_displacement(image):
+    binary = image
+    binary[binary > 0] = 1
+    lbs = label(binary)
+
+    properties = regionprops(lbs)
+
+    box = properties[0].bbox
+
+    height = abs(box[2] - box[0])
+    width = abs(box[3] - box[1])
+
+    centroid = np.array([properties[0].local_centroid[0],
+                         properties[0].local_centroid[1]])
+
+    scaled_centriod = np.array([centroid[0] / height, centroid[1] / width])
+
+    scaled_dist = np.linalg.norm(np.array([0.5, 0.5]) - scaled_centriod)
+    return scaled_dist
+
+
+def asymmetry_measures(image):
+    binary = image
+    binary[binary > 0] = 1
+    lbs = label(binary)
+    properties = regionprops(lbs)
+
+    original = properties[0].image * 1.
+    # flips
+    left_right = np.fliplr(original)
+    up_dow = np.flipud(original)
+    # rotations
+
+    angles = [45, 90, 135, 180, 225, 270, 315]
+    rotations = [tf.rotate(original, angle) for angle in angles]
+
+    # distances
+    lr_dist = np.linalg.norm(original - left_right, ord=-np.inf)
+    ud_dist = np.linalg.norm(original - up_dow, ord=-np.inf)
+
+    rotation_dist = []
+    for rotation in rotations:
+        rotation_dist.append(np.linalg.norm(original - rotation, ord=-np.inf))
+
+    return [lr_dist, ud_dist] + rotation_dist
+
+
 def extract_features(image):
     im = preprocess_image(image)
     skeleton_dist_hist = skeleton_distances_histogram(im)
@@ -115,12 +172,16 @@ def extract_features(image):
     lines_length = skeleton_lines_length_hist(im)
     branches = n_skeleton_branches(im)
     branched_points = n_skeleton_branched_points(im)
+    centroid_dist = centriod_displacement(im)
+    asymmetry = asymmetry_measures(im)
     features = np.concatenate((
         skeleton_dist_hist,
         curv_hist,
         measures,
         lines_length,
-        np.array([branches]),
-        np.array([branched_points])
+        [branches],
+        [branched_points],
+        [centroid_dist],
+        asymmetry
     ))
     return features
