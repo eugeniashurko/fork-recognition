@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # Tests for features extraction pipeline
     X = []
     # print("FEATURE EXTRACTION....")
-     for i, image in enumerate(images):
+    for i, image in enumerate(images):
          X.append(extract_features(image))
 
     # # -------------
