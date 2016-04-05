@@ -2,15 +2,13 @@ cycler==0.10.0
 decorator==4.0.9
 Jinja2==2.8
 jsonschema==2.4.0
-mahotas==1.4.1
 MarkupSafe==0.23
-matplotlib==1.5.1
 mistune==0.7.1
 nbconvert==4.1.0
 nbformat==4.0.1
 notebook==4.1.0
 numpy==1.10.4
-path.py==0.0.0
+path.py
 pexpect==3.3
 pickleshare==0.5
 Pillow==3.1.1
