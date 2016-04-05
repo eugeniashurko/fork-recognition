@@ -12,6 +12,7 @@ from skimage.morphology import disk
 from skimage.morphology import medial_axis
 from skimage.measure import label
 from skimage.transform import (hough_line, probabilistic_hough_line)
+from skimage.measure import find_contours
 
 
 def pad_image(im):
@@ -26,8 +27,14 @@ def pad_image(im):
         dtype=np.uint8,
         ndmin=2)
     padded_im = np.concatenate([new_row, padded_im, new_row])
-    
+
     return padded_im
+
+
+def trace_border(im, connectivity=4):
+    borders = find_contours(im, 1)
+    border = borders[0]
+    return border
 
 
 def fill_foreground(image):
@@ -43,7 +50,7 @@ def fill_foreground(image):
     filled_image[img_labels == background] = 0
      # The rest is white
     filled_image[img_labels != background] = 255
-    
+
     return filled_image
 
 
@@ -60,7 +67,7 @@ def medial_axis_skeleton(im):
     dist_on_skel = distance * skel
     return dist_on_skel
 
-    
+
 def skeleton_lines(skeleton):
     """Constructs the lines of the medial axis skeleton"""
     h, theta, d = hough_line(skeleton)

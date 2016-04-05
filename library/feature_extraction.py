@@ -33,7 +33,6 @@ def skeleton_distances_histogram(skeleton):
     frequencies = np.histogram(non_zero_dist, bins=10)[0]
     # normalize
     norm_frequencies = frequencies / sum(frequencies)
-    
     return norm_frequencies
 
 
@@ -79,17 +78,17 @@ def skeleton_lines_length_hist(skeleton):
         norm_frequencies = frequencies / sum(frequencies)
     else:
         norm_frequencies = np.array([0 for i in range(frequencies.shape[0])])
-    
+
     return norm_frequencies
 
-    
+
 def n_skeleton_branches(image):
     """Number of branches of skeleton."""
     skeleton = mh.thin(image)
     branches = end_points(skeleton)
     return (sum(sum(branches != False)))
 
-    
+
 def n_skeleton_branched_points(image):
     """Number of branched points of skeleton."""
     skeleton = mh.thin(image)
@@ -108,7 +107,7 @@ def centriod_displacement(image):
 
     if len(properties) > 0:
         box = properties[0].bbox
-        
+
         height = abs(box[2] - box[0])
         width = abs(box[3] - box[1])
 
@@ -118,7 +117,7 @@ def centriod_displacement(image):
 
         # Scale it
         scaled_centriod = np.array([centroid[0] / height, centroid[1] / width])
-        
+
         scaled_dist = np.linalg.norm(np.array([0.5, 0.5]) - scaled_centriod)
         return scaled_dist
     else:
@@ -137,21 +136,20 @@ def asymmetry_measures(image):
         # flips
         left_right = np.fliplr(original)
         up_dow = np.flipud(original)
-        
+
         # rotations
         angles = [45, 90, 135, 180, 225, 270, 315]
         rotations = [tf.rotate(original, angle) for angle in angles]
-        
+
         # distances
         lr_dist = np.linalg.norm(original - left_right, ord=-np.inf)
         ud_dist = np.linalg.norm(original - up_dow, ord=-np.inf)
-        
+
         rotation_dist = []
         for rotation in rotations:
             rotation_dist.append(np.linalg.norm(original - rotation, ord=-np.inf))
-            
-        return [lr_dist, ud_dist] + rotation_dist
 
+        return [lr_dist, ud_dist] + rotation_dist
     else:
         return [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -160,7 +158,7 @@ def extract_features(image):
     """Extracts all the feature for the learning."""
     im = preprocess_image(image)
     skeleton = medial_axis_skeleton(im)
-    
+
     skeleton_dist_hist = skeleton_distances_histogram(skeleton)
     measures = shape_measures(im)
     lines_length = skeleton_lines_length_hist(skeleton)
@@ -168,7 +166,7 @@ def extract_features(image):
     branched_points = n_skeleton_branched_points(im)
     centroid_dist = centriod_displacement(im)
     asymmetry = asymmetry_measures(im)
-    
+
     features = np.concatenate((
         skeleton_dist_hist,
         measures,
@@ -178,7 +176,7 @@ def extract_features(image):
         [centroid_dist],
         asymmetry
     ))
-    
+
     return features
 
 
