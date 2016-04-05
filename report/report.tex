@@ -139,11 +139,33 @@ Detecting the straight lines of our medial axis skeleton helps us to capture its
 We have used as a subset of our features the histogram (5 bins) of the lengths of the detected straight lines, which characterizes the distribution of straight elements of medial axis skeleton for the given image.
 
 \subsubsection{Quantitative features of skeleton}
-We also extract some quantitative features from skeletons: number of branches and number of "intersection points".
+We also extract some quantitative features from skeletons: number of branches and number of branched points (points of skeleton where the branches start).
 
 These features are not normalized because they are already scale-invariant.
 
-To do that, we use an algorithm to decompose the skeleton into a graph.
+To find end-points of branches and branched points of skeleton we use the \texttt{mahotas.hitmiss} implementation of \textit{Hit and Miss Transform Algorithm}.
+
+We provide to the algorithm all possible structures of the neighborhood of an end point (or respectively branched point) to recognise, for example:
+
+\begin{center}
+ 	\begin{tabular}{| c | c | c |}
+ 		\hline
+		0 & 0 & 0 \\ \hline
+		0 & 1 & 0 \\ \hline
+		2 & 1 & 2 \\ \hline
+	\end{tabular}
+\end{center}
+
+where value 1 represents pixel that belongs to skeleton, 0 one that does not, and 2 represents that in this position we do not care whether the pixel belongs or not to the skeleton. This structure will match our end-point. We form 8 such possible structures for recognition of end-points of skeleton branches. The figure below illustrates an example of a matching structure for the branched point:
+ 
+\begin{center}
+ 	\begin{tabular}{| c | c | c |}
+ 		\hline
+			1 & 2 & 1 \\ \hline
+			2 & 1 & 2 \\ \hline
+			1 & 2 & 2 \\ \hline
+	\end{tabular}
+\end{center}
 
 \subsection{Border Curvature}
 \subsubsection{Histogram of border curvature coefficients}
@@ -181,18 +203,25 @@ Two kinds of test were performed on the training dataset:
   \begin{tabular}{| l | c | c |}
     \hline
     \textbf{Classifier} & \textbf{Score out of one} & \textbf{Score out of ten}\\ \hline \hline
-    \textit{Gaussian Naive Bayes} & \textit{0.78} & \textit{0.93} \\ \hline
-	K-Nearest Neighbours (5 neighbours) & 0.63 & 0.87\\ \hline
-	K-Nearest Neighbours (20 neighbours) & 0.51 & 0.92 \\ \hline
-	SVM Classifier (linear kernel, C=1) & 0.71 & 0.94 \\ \hline
-	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.78} & \textit{0.95} \\ 
+    \textit{Gaussian Naive Bayes} & \textit{0.81} & \textit{0.97} \\ \hline
+	K-Nearest Neighbours (5 neighbours) & 0.71 & 0.95\\ \hline
+	K-Nearest Neighbours (20 neighbours) & 0.60 & 0.98 \\ \hline
+	SVM Classifier (linear kernel, C=1) & 0.76 & 0.93 \\ \hline
+	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.85} & \textit{0.98} \\ 
 	\hline
   \end{tabular}
 \end{center}
 
+Parameters for SVM classifiers were chosen using the grid search according to the best score.
+
+The following plot illustrates, in general, the confusion matrix between our classes and shows that for some classes classifier predicts more accurately then for others:
+
 \includegraphics[scale=0.6]{confusion_matrix.png} 
 
-Parameters for SVM classifiers were chosen using the grid search according to the best score.
+The figures below are a part of more scaled version of confusion matrix, where we can see, for example, that for some \textit{"device"} classes the accuracy is very high and for others vise versa. Figure on the right shows us that in some cases the classifier confuses between shapes of a class \textit{"fork"} and ones of a class \textit{"spring"}, as well as \textit{"frog"} and \textit{"teddy"}.   
+
+\includegraphics[scale=0.4]{device.png} 
+\includegraphics[scale=0.4]{fork_fish.png} 
 
 \section{Discussions}
 Presented above feature vector is normalized and can be used as a shape descriptor  
