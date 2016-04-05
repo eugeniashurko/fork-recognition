@@ -181,16 +181,16 @@ Two kinds of test were performed on the training dataset:
   \begin{tabular}{| l | c | c |}
     \hline
     \textbf{Classifier} & \textbf{Score out of one} & \textbf{Score out of ten}\\ \hline \hline
-    \textit{Gaussian Naive Bayes} & \textit{0.79} & \textit{0.91} \\ \hline
-	K-Nearest Neighbors (5 neighbors) & 0.63 & 0.87\\ \hline
-	K-Nearest Neighbors (20 neighbors) & 0.51 & 0.92 \\ \hline
-	SVM Classifier (linear kernel, C=1) & 0.68 & 0.90 \\ \hline
-	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.78} & \textit{0.93} \\ 
+    \textit{Gaussian Naive Bayes} & \textit{0.78} & \textit{0.93} \\ \hline
+	K-Nearest Neighbours (5 neighbours) & 0.63 & 0.87\\ \hline
+	K-Nearest Neighbours (20 neighbours) & 0.51 & 0.92 \\ \hline
+	SVM Classifier (linear kernel, C=1) & 0.71 & 0.94 \\ \hline
+	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.78} & \textit{0.95} \\ 
 	\hline
   \end{tabular}
 \end{center}
 
-\includegraphics[scale=0.7]{confusion_matrix.png}
+\includegraphics[scale=0.6]{confusion_matrix.png} 
 
 Parameters for SVM classifiers were chosen using the grid search according to the best score.
 
