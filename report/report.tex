@@ -34,6 +34,20 @@ Project report
 
 \section{Introduction}  
 
+There is a great interest in a problem of shape matching and shape recognition \cite{Zhang20041}. We propose our solution to this problem based on Machine Learning techniques applied to global shape desciptors.
+
+To build a global shape descriptor which would capture geometry and topology of the shapes in a given class various contour-based and region-based features were assembled into a global bag-of-features.
+
+We test this approach in the provided dataset that consists of $1 050$ images from $70$ different classes.
+
+The following Python tools were used on a different stages of project:
+\begin{itemize}
+\item Library \texttt{scikit-image} for image processing purposes \url{http://scikit-image.org/}
+\item Couple of utils were used from computer vision library \texttt{mahotas} \url{http://mahotas.readthedocs.org/en/latest/} (such as hit\&miss, thinning algorithms).
+\item Library \texttt{scikit-learn} for machine learning and data preprocessing \url{http://scikit-learn.org/}
+\end{itemize}
+
+
 \section{Feature Engineering}
 
 The extracted features capture the properties of shape: its topology and its geometry. In total, 38 features were developed:
@@ -82,6 +96,8 @@ We first generate the medial axis skeleton. The scikit implementation \cite{medi
 
 Then we try to extract some numerical features from this skeleton, which are all made to be scale-invariant (all features from skeleton are naturally rotation-invariant).
 
+Skeletons of some shapes are illustrated by the figures below:
+
 \includegraphics[scale=0.25]{fork_75.png}
 \includegraphics[scale=0.25]{cup_476.png}
 
@@ -108,13 +124,19 @@ Hought transform consists of two steps:
 \begin{itemize}
   \item Parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins). The array representing this grid contains number of pixels which are the closest to the respective line.
   \item An exhaustive search of the parameters with maximum frequency is performed. Each time a pixel close to a particular parametrized line is found, the corresponding value is incremented in the array.\\
-  This step is called \textit{incremental step}, it usually dominates the execution time of Hough transform. So, %TODO
+  This step is called \textit{incremental step}, it usually dominates the execution time of Hough transform.
 \end{itemize}
+
+The increment of the array's value for a given pair of parameters is called voting, and the Probabilistic Hough Transform makes an assumption that it is enough for a random subset of image pixel to vote to find the maximum frequency parameters. So for our dataset experimentally we have choosen to detect the lines, for which numer of pixels voting for the pair of parameters is more than 10 (threshold value $T=10$).
+
+Detecting the straight lines of our medial axis skeleton helps us to capture its geometry. Images below illustrate the result of straight lines detection on some examples from our dataset.
 
 \includegraphics[scale=0.6]{camel_764.png}
 \vspace{12px}
 
 \includegraphics[scale=0.6]{hammer_604.png}
+
+We have used as a subset of our features the histogram (5 bins) of the lengths of the detected straight lines, which characterizes the distribution of straight elements of medial axis skeleton for the given image.
 
 \subsubsection{Quantitative features of skeleton}
 We also extract some quantitative features from skeletons: number of branches and number of "intersection points".
@@ -141,9 +163,13 @@ Distances from original image to its horizontal and vertical flips, to rotations
  
 \section{Classification models}
 
-Machine Learning techniques were used to build the model of shape recognition. 
+Machine Learning techniques were used to build the model of shape recognition.  
 
-Parameters for SVM classifiers were chosen using the grid search according to the best score.
+\textit{Gaussian Naive Bayes Classifier} is
+
+\textit{K-Nearest Neighbors Classifier} is
+
+\textit{Support Vector Machines Classifier} is
 
 Two kinds of test were performed on the training dataset:
 \begin{itemize}
@@ -156,21 +182,21 @@ Two kinds of test were performed on the training dataset:
     \hline
     \textbf{Classifier} & \textbf{Score out of one} & \textbf{Score out of ten}\\ \hline \hline
     \textit{Gaussian Naive Bayes} & \textit{0.79} & \textit{0.91} \\ \hline
-	K-Nearest Neighbours (5 neighbours) & 0.63 & 0.87\\ \hline
-	K-Nearest Neighbours (20 neighbours) & 0.5 & 0.92 \\ \hline
+	K-Nearest Neighbors (5 neighbors) & 0.63 & 0.87\\ \hline
+	K-Nearest Neighbors (20 neighbors) & 0.51 & 0.92 \\ \hline
 	SVM Classifier (linear kernel, C=1) & 0.68 & 0.90 \\ \hline
 	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.78} & \textit{0.93} \\ 
 	\hline
   \end{tabular}
 \end{center}
 
+Parameters for SVM classifiers were chosen using the grid search according to the best score.
 
-\section{Results and Discussions}
+\section{Discussions}
+Presented above feature vector is normalized and can be used as a shape descriptor  
+
 \subsection{Performance}
 \subsection{Robustness and scale/rotation invariance}
-\subsection{Conclusions}
-
-\section{Bibliography}
 
 \bibliographystyle{plain}
 \bibliography{biblio}
