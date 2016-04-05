@@ -113,9 +113,13 @@ Distances from original image to its horizontal and vertical flips, to rotations
  
 \section{Classification models}
 
-Machine Learning techniques were used to build the model of shape recognition. 
+Machine Learning techniques were used to build the model of shape recognition.  
 
-Parameters for SVM classifiers were chosen using the grid search according to the best score.
+\textit{Gaussian Naive Bayes Classifier} is
+
+\textit{K-Nearest Neighbours Classifier} is
+
+\textit{Support Vector Machines Classifier} is
 
 Two kinds of test were performed on the training dataset:
 \begin{itemize}
@@ -129,13 +133,14 @@ Two kinds of test were performed on the training dataset:
     \textbf{Classifier} & \textbf{Score out of one} & \textbf{Score out of ten}\\ \hline \hline
     \textit{Gaussian Naive Bayes} & \textit{0.79} & \textit{0.91} \\ \hline
 	K-Nearest Neighbours (5 neighbours) & 0.63 & 0.87\\ \hline
-	K-Nearest Neighbours (20 neighbours) & 0.5 & 0.92 \\ \hline
+	K-Nearest Neighbours (20 neighbours) & 0.50 & 0.92 \\ \hline
 	SVM Classifier (linear kernel, C=1) & 0.68 & 0.90 \\ \hline
 	\textit{SVM Classifier (RBF kernel, C=10, gamma=0.1)} & \textit{0.78} & \textit{0.93} \\ 
 	\hline
   \end{tabular}
 \end{center}
 
+Parameters for SVM classifiers were chosen using the grid search according to the best score.
 
 \section{Results and Discussions}
 \subsection{Performance}
