@@ -45,7 +45,7 @@ The extracted features capture the properties of shape: its topology and its geo
 	\item Solidity
 	\item Extend
 	\item Scaled major axis length
-	\item Scaled major axis length
+	\item Scaled minor axis length
 	\item Histogram of medial axis straight lines length (\textbf{5 features} corresponding to 5 bins of histogram)
 	\item Number of branches of medial axis skeleton
 	\item Number of branched points of medial axis skeleton
@@ -54,6 +54,19 @@ The extracted features capture the properties of shape: its topology and its geo
 \end{itemize} 
 
 \subsection{Image preprocessing}
+The images are pre-processed before we extract the features from them. There are two reasons for that:
+\begin{itemize}
+	\item We want to remove the noise from the image, because our features need to be robust to noise.
+        \item We also want to remove the black holes that appears in some images.
+        \item We want the shape to be white and the backgroud black (one of the rats is reversed).
+\end{itemize}
+
+For that we implemented 3 transfomations:
+\begin{description}
+	\item[Image padding]: The border of the image are just filled with a border of black pixels, in order to avoid problems when the shapes touch the border.
+        \item[Shape filling]: The background is detected by the fact that it is the first connected component. Then it is fillend in black and the rest of the image (the main shape) is filled with white. With that we remove all the wholes in the image.
+        \item[Smoothing]: The goal of this smoothing is to get rid of the noise at the border of the shape. We apply to the image a median filter, with as neighborhood a disk of a 7px diameter. After few tests, 7px seems to be a good compromise between smoothing and not loosing too much details. 
+\end{description}
 
 \subsection{Medial Axis}
 
