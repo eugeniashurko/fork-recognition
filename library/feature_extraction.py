@@ -27,10 +27,9 @@ def preprocess_image(image):
     return smoothed_image
 
 
-def skeleton_distances_histogram(image):
+def skeleton_distances_histogram(skeleton):
     """Generates the histogram of the skeleton's distance on the image (a-priori already pre-processed)."""
-    distances_on_skeleton = medial_axis_skeleton(image)
-    non_zero_dist = distances_on_skeleton[distances_on_skeleton != 0.0]
+    non_zero_dist = skeleton[skeleton != 0.0]
     frequencies = np.histogram(non_zero_dist, bins=10)[0]
     # normalize
     norm_frequencies = frequencies / sum(frequencies)
@@ -69,9 +68,8 @@ def shape_measures(image):
     return [ratio, solidity, extent, major_axis_scaled, minor_axis_scaled]
 
 
-def skeleton_lines_length_hist(image):
+def skeleton_lines_length_hist(skeleton):
     """Returns the histogram of length of straight lines of the of the image skeleton."""
-    skeleton = medial_axis_skeleton(image)
     lines = skeleton_lines(skeleton)
     lenghts = np.array([np.linalg.norm(
         np.array(line[0]) - np.array(line[1])) for line in lines])
@@ -161,9 +159,11 @@ def asymmetry_measures(image):
 def extract_features(image):
     """Extracts all the feature for the learning."""
     im = preprocess_image(image)
-    skeleton_dist_hist = skeleton_distances_histogram(im)
+    skeleton = medial_axis_skeleton(im)
+    
+    skeleton_dist_hist = skeleton_distances_histogram(skeleton)
     measures = shape_measures(im)
-    lines_length = skeleton_lines_length_hist(im)
+    lines_length = skeleton_lines_length_hist(skeleton)
     branches = n_skeleton_branches(im)
     branched_points = n_skeleton_branched_points(im)
     centroid_dist = centriod_displacement(im)
