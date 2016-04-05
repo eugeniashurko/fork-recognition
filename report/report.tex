@@ -116,8 +116,12 @@ Hought transform consists of two steps:
 
 \includegraphics[scale=0.6]{hammer_604.png}
 
-\subsubsection{Quantitive features of skeleton}
-To the quantive features of the skeleton the number of branches (number of end points in skeleton)
+\subsubsection{Quantitative features of skeleton}
+We also extract some quantitative features from skeletons: number of branches and number of "intersection points".
+
+These features are not normalized because they are already scale-invariant.
+
+To do that, we use an algorithm to decompose the skeleton into a graph.
 
 \subsection{Border Curvature}
 \subsubsection{Histogram of border curvature coefficients}
@@ -132,7 +136,7 @@ To the quantive features of the skeleton the number of branches (number of end p
 \includegraphics[scale=0.26]{guitar_centroid.png}
 \includegraphics[scale=0.26]{tree_centroid.png}
 
-\subsection{Assymetry measures}
+\subsection{Asymmetry measures}
 Distances from original image to its horizontal and vertical flips, to rotations for $k*\frac{\pi}/4$
  
 \section{Classification models}
