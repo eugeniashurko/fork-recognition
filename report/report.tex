@@ -35,7 +35,7 @@ Project report
 
 \section{Feature Engineering}
 
-The extracted features capture the properties of shape: its topology and its geometry. In total, 38 features were developed in total:
+The extracted features capture the properties of shape: its topology and its geometry. In total, 38 features were developed:
 
 \begin{itemize}
 	\item Histogram of distance of the medial axis points from borders (\textbf{10 features} corresponding to 10 bins of histogram)
@@ -45,10 +45,11 @@ The extracted features capture the properties of shape: its topology and its geo
 	\item Extend
 	\item Scaled major axis length
 	\item Scaled major axis length
-	\item Histogram of medial axis straight lines (\textbf{5 features} corresponding to 5 bins of histogram)
+	\item Histogram of medial axis straight lines length (\textbf{5 features} corresponding to 5 bins of histogram)
 	\item Number of branches of medial axis skeleton
 	\item Number of branched points of medial axis skeleton
 	\item Scaled centroid displacement
+	\item Asymmetry measures (\textbf{9 features} corresponding to horizontal and vertical flips, and rotation for 7 distinct angles)
 \end{itemize} 
 
 \subsection{Image preprocessing}
@@ -65,9 +66,12 @@ The extracted features capture the properties of shape: its topology and its geo
 \includegraphics[scale=0.25]{deer_79.png}
 
 \subsubsection{Histogram of distance of the medial axis points from borders}
+
+Each point $p$ of medial axis skeleton has the value $d(p)$ of distance to the border  assigned to it, this distance may also be seen as the radius of the maximal incircle with a center in $p$, and, in general, characterises the local thinkness of the shape in this point. Histogram of the skeleton distaces was used as a feature for our shape description, and it gives us the information about the distribution of local thinkness of the given shape.
+
 \subsubsection{Medial axis straight lines}
 
-Python scikit-image(\texttt{skimage.transform.probabilistic_hough_line}) implementation of \textit{Probabilistic Hough Transform} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair (\ro, \theta), where \ro is a length of segment, and \theta is an angle. Parameter's plane of (\ro, \theta) is divided into discrete grid (by parameter frequency  value bins), and the array representing this grid contains number of pixel close to the respective line \cite{Kiryati}.
+Python implementation (\texttt{skimage.transform.probabilistic\_hough\_line}) of \textit{Probabilistic Hough Transform} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair $(\rho, \theta)$, where $\rho$ is a length of segment, and $\theta$ is an angle. Hought transform consists of two steps: parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins), and the array representing this grid contains number of pixels close to the respective line, after this the exhaustive search of the parameters with maximum frequency is performed\cite{Kiryati}. Each time you find a pixel close to a particular parametrised line you increment the corresponding value of an array, this step is called incremental step, and it usually dominates the execution time of Hough transform\cite{Kiryati}, so 
 
 \includegraphics[scale=0.6]{camel_764.png}
 \vspace{12px}
@@ -126,8 +130,7 @@ Two kinds of test were performed on the training dataset:
 
 \begin{thebibliography}
 
-\bibitem{Kiryati}
-  Kiryati, N., Eldar, Y., & Bruckstein, A. M. (1991). A probabilistic Hough transform. Pattern recognition, 24(4), 303-316.
+\bibitem{Kiryati}Kiryati, N., Eldar, Y., & Bruckstein, A. M. (1991). A probabilistic Hough transform. Pattern recognition, 24(4), 303-316.
 
 \end{thebibliography}
 
