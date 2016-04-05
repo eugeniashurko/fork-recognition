@@ -1,8 +1,4 @@
 """"Classifies images from an already learned database"""
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import cm
-
 import numpy as np
 from skimage.io import imshow
 from skimage.io import imread
@@ -35,21 +31,21 @@ if __name__ == '__main__':
     X = load(open("X", "rb"))
     y = load(open("y", "rb"))
 
+    # Build the classifier from binary data loaded
     clf = OneVsRestClassifier(GaussianNB())
     clf.fit(X, y)
-    #proba = clf.predict_proba()
 
-    #print(proba[0])
-
-    # Process image
+    # Check arguments
     if len(argv) < 2:
         print("Error: no pgm file given")
         exit()
     else:
+        # Process image
         image = imread(argv[1], as_grey=True)
         p_image = preprocess_image(image)
         features = extract_features(p_image)
 
+        # Classifies the image
         proba = clf.predict_proba([features])
         for p in proba[0]:
             print("%.13f" % p)
