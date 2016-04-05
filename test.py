@@ -7,7 +7,7 @@ import numpy as np
 # from skimage.io import imshow
 
 from pickle import dump, load
-# from rosetta.parallel.parallel_easy import imap_easy
+from rosetta.parallel.parallel_easy import imap_easy
 
 # from library.utils import medial_axis_skeleton
 # from library.utils import skeleton_lines
@@ -15,15 +15,15 @@ from pickle import dump, load
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import train_test_split
-from sklearn.svm import LinearSVC, SVC
+from sklearn.svm import SVC
 from sklearn import cross_validation
-from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import scale
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import SelectFromModel
 
 from library.data_utils import load_database
 from library.feature_extraction import extract_features
-from library.feature_extraction import preprocess_image
+# from library.feature_extraction import preprocess_image
 
 
 def custom_test(clf, X, y):
@@ -43,7 +43,8 @@ def custom_test(clf, X, y):
 if __name__ == '__main__':
     images, labels = load_database("database", "classes.csv")
 
-    # X = list(imap_easy(extract_features, images))
+    # Attempt to paralellize
+    # X = list(imap_easy(extract_features, images, 4, 5))
 
     # Tests for features extraction pipeline
     X = []
@@ -166,6 +167,11 @@ if __name__ == '__main__':
 
     print("TEACHERS TEST:")
     print(custom_test(clf, X_test, y_test))
+
+    model = SelectFromModel(clf, prefit=True)
+    X_new = model.transform(X)
+    print(X_new.shape)
+    print(clf.estimators_[0].feature_importances_)
 
     print("\n\nSVC RBF kernel:")
     print("++++++++++++")
