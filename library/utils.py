@@ -1,5 +1,5 @@
 """Set of utils for input image processing."""
-import mahotas as mh
+# import mahotas as mh
 import math
 
 import numpy as np
@@ -90,7 +90,7 @@ def trace_border(im, connectivity=4):
                 i = (i + 1) % 8
         elif connectivity == 4:
             i = (direction + 1) % 4
-            while i != (direction + 4) % 8:
+            while i != (direction + 4) % 4:
                 next_pixel = (
                     current_pixel[0] + CONNECTIVITY_INC[connectivity][i][0],
                     current_pixel[1] + CONNECTIVITY_INC[connectivity][i][1])
@@ -295,107 +295,107 @@ def end_points(skel):
     return ep > 0
 
 
-def branched_points(skel):
-    """Find branching points of skeleton.
+# def branched_points(skel):
+#     """Find branching points of skeleton.
 
-    From the tutorial: "Construct a graph from the skeleton image of a binary form"
-    http://dip4fish.blogspot.fr/2014/05/construct-graph-from-skeleton-image-of.html
-    """
-    X = []
-    # cross X
-    X0 = np.array([[0, 1, 0],
-                   [1, 1, 1],
-                   [0, 1, 0]])
-    X1 = np.array([[1, 0, 1],
-                   [0, 1, 0],
-                   [1, 0, 1]])
-    X.append(X0)
-    X.append(X1)
+#     From the tutorial: "Construct a graph from the skeleton image of a binary form"
+#     http://dip4fish.blogspot.fr/2014/05/construct-graph-from-skeleton-image-of.html
+#     """
+#     X = []
+#     # cross X
+#     X0 = np.array([[0, 1, 0],
+#                    [1, 1, 1],
+#                    [0, 1, 0]])
+#     X1 = np.array([[1, 0, 1],
+#                    [0, 1, 0],
+#                    [1, 0, 1]])
+#     X.append(X0)
+#     X.append(X1)
 
-    # T like
-    T = []
-    # T0 contains X0
-    T0 = np.array([[2, 1, 2],
-                   [1, 1, 1],
-                   [2, 2, 2]])
+#     # T like
+#     T = []
+#     # T0 contains X0
+#     T0 = np.array([[2, 1, 2],
+#                    [1, 1, 1],
+#                    [2, 2, 2]])
 
-    T1 = np.array([[1, 2, 1],
-                   [2, 1, 2],
-                   [1, 2, 2]])  # contains X1
+#     T1 = np.array([[1, 2, 1],
+#                    [2, 1, 2],
+#                    [1, 2, 2]])  # contains X1
 
-    T2 = np.array([[2, 1, 2],
-                   [1, 1, 2],
-                   [2, 1, 2]])
+#     T2 = np.array([[2, 1, 2],
+#                    [1, 1, 2],
+#                    [2, 1, 2]])
 
-    T3 = np.array([[1, 2, 2],
-                   [2, 1, 2],
-                   [1, 2, 1]])
+#     T3 = np.array([[1, 2, 2],
+#                    [2, 1, 2],
+#                    [1, 2, 1]])
 
-    T4 = np.array([[2, 2, 2],
-                   [1, 1, 1],
-                   [2, 1, 2]])
+#     T4 = np.array([[2, 2, 2],
+#                    [1, 1, 1],
+#                    [2, 1, 2]])
 
-    T5 = np.array([[2, 2, 1],
-                   [2, 1, 2],
-                   [1, 2, 1]])
+#     T5 = np.array([[2, 2, 1],
+#                    [2, 1, 2],
+#                    [1, 2, 1]])
 
-    T6 = np.array([[2, 1, 2],
-                   [2, 1, 1],
-                   [2, 1, 2]])
+#     T6 = np.array([[2, 1, 2],
+#                    [2, 1, 1],
+#                    [2, 1, 2]])
 
-    T7 = np.array([[1, 2, 1],
-                   [2, 1, 2],
-                   [2, 2, 1]])
-    T.append(T0)
-    T.append(T1)
-    T.append(T2)
-    T.append(T3)
-    T.append(T4)
-    T.append(T5)
-    T.append(T6)
-    T.append(T7)
+#     T7 = np.array([[1, 2, 1],
+#                    [2, 1, 2],
+#                    [2, 2, 1]])
+#     T.append(T0)
+#     T.append(T1)
+#     T.append(T2)
+#     T.append(T3)
+#     T.append(T4)
+#     T.append(T5)
+#     T.append(T6)
+#     T.append(T7)
 
-    # Y like
-    Y = []
-    Y0 = np.array([[1, 0, 1],
-                   [0, 1, 0],
-                   [2, 1, 2]])
+#     # Y like
+#     Y = []
+#     Y0 = np.array([[1, 0, 1],
+#                    [0, 1, 0],
+#                    [2, 1, 2]])
 
-    Y1 = np.array([[0, 1, 0],
-                   [1, 1, 2],
-                   [0, 2, 1]])
+#     Y1 = np.array([[0, 1, 0],
+#                    [1, 1, 2],
+#                    [0, 2, 1]])
 
-    Y2 = np.array([[1, 0, 2],
-                   [0, 1, 1],
-                   [1, 0, 2]])
+#     Y2 = np.array([[1, 0, 2],
+#                    [0, 1, 1],
+#                    [1, 0, 2]])
 
-    Y3 = np.array([[0, 2, 1],
-                   [1, 1, 2],
-                   [0, 1, 0]])
+#     Y3 = np.array([[0, 2, 1],
+#                    [1, 1, 2],
+#                    [0, 1, 0]])
 
-    Y4 = np.array([[2, 1, 2],
-                   [0, 1, 0],
-                   [1, 0, 1]])
-    Y5 = np.rot90(Y3)
-    Y6 = np.rot90(Y4)
-    Y7 = np.rot90(Y5)
-    Y.append(Y0)
-    Y.append(Y1)
-    Y.append(Y2)
-    Y.append(Y3)
-    Y.append(Y4)
-    Y.append(Y5)
-    Y.append(Y6)
-    Y.append(Y7)
+#     Y4 = np.array([[2, 1, 2],
+#                    [0, 1, 0],
+#                    [1, 0, 1]])
+#     Y5 = np.rot90(Y3)
+#     Y6 = np.rot90(Y4)
+#     Y7 = np.rot90(Y5)
+#     Y.append(Y0)
+#     Y.append(Y1)
+#     Y.append(Y2)
+#     Y.append(Y3)
+#     Y.append(Y4)
+#     Y.append(Y5)
+#     Y.append(Y6)
+#     Y.append(Y7)
 
-    bp = np.zeros(skel.shape, dtype=int)
-    for x in X:
-        bp = bp + mh.morph.hitmiss(skel, x)
-    for y in Y:
-        bp = bp + mh.morph.hitmiss(skel, y)
-    for t in T:
-        bp = bp + mh.morph.hitmiss(skel, t)
-    return bp > 0
+#     bp = np.zeros(skel.shape, dtype=int)
+#     for x in X:
+#         bp = bp + mh.morph.hitmiss(skel, x)
+#     for y in Y:
+#         bp = bp + mh.morph.hitmiss(skel, y)
+#     for t in T:
+#         bp = bp + mh.morph.hitmiss(skel, t)
+#     return bp > 0
 
 
 def get_vector(line):
