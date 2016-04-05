@@ -66,6 +66,9 @@ The extracted features capture the properties of shape: its topology and its geo
 
 \subsubsection{Histogram of distance of the medial axis points from borders}
 \subsubsection{Medial axis straight lines}
+
+Python scikit-image(\texttt{skimage.transform.probabilistic_hough_line}) implementation of \textit{Probabilistic Hough Transform} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair (\ro, \theta), where \ro is a length of segment, and \theta is an angle. Parameter's plane of (\ro, \theta) is divided into discrete grid (by parameter frequency  value bins), and the array representing this grid contains number of pixel close to the respective line \cite{Kiryati}.
+
 \includegraphics[scale=0.6]{camel_764.png}
 \vspace{12px}
 
@@ -120,5 +123,13 @@ Two kinds of test were performed on the training dataset:
 \subsection{Performance}
 \subsection{Robustness and scale/rotation invariance}
 \subsection{Conclusions}
+
+\begin{thebibliography}
+
+\bibitem{Kiryati}
+  Kiryati, N., Eldar, Y., & Bruckstein, A. M. (1991). A probabilistic Hough transform. Pattern recognition, 24(4), 303-316.
+
+\end{thebibliography}
+
 
 \end{document}
