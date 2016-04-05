@@ -49,58 +49,19 @@ if __name__ == '__main__':
     # Tests for features extraction pipeline
     X = []
     # print("FEATURE EXTRACTION....")
-    # for i, image in enumerate(images):
-    #     # Plotting the skeletons
-    #     # ----------------------
-    #     # im = preprocess_image(image)
-    #     # distances_on_skeleton = medial_axis_skeleton(im)
-    #     # fig, (ax1, ax2) = plt.subplots(
-    #     #     1, 2, figsize=(12, 8), sharex=True, sharey=True,
-    #     #     subplot_kw={'adjustable': 'box-forced'})
-    #     # ax1.imshow(im, cmap=plt.cm.gray, interpolation='nearest')
-    #     # ax1.axis('off')
-    #     # ax2.imshow(
-    #     #     distances_on_skeleton,
-    #     #     cmap=plt.cm.spectral,
-    #     #     interpolation='nearest')
-    #     # ax2.contour(im, [0.5], colors='w')
-    #     # ax2.axis('off')
-    #     # fig.tight_layout()
-    #     # plt.savefig("skeletons/%s_%i" % (labels[i], i))
-    #     # plt.close()
-
-    #     # # Plotting the skeleton lines
-    #     # im = preprocess_image(image)
-    #     # distances_on_skeleton = medial_axis_skeleton(im)
-    #     # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4), sharex=True, sharey=True)
-
-    #     # ax1.imshow(distances_on_skeleton, cmap=plt.cm.gray)
-    #     # ax1.set_title('Input image')
-    #     # ax1.set_axis_off()
-
-    #     # lines = skeleton_lines(distances_on_skeleton)
-
-    #     # for line in lines:
-    #     #     p0, p1 = line
-    #     #     ax2.plot((p0[0], p1[0]), (p0[1], p1[1]))
-
-    #     # ax2.set_title('Probabilistic Hough')
-    #     # ax2.set_axis_off()
-    #     # plt.savefig("lines/%s_%i" % (labels[i], i))
-    #     # plt.close()
-
-    #     X.append(extract_features(image))
+     for i, image in enumerate(images):
+         X.append(extract_features(image))
 
     # # -------------
     # # Machine learning
     X = np.array(X)
     y = np.array(labels)
 
-    # dump(X, open("X", "wb"))
-    # dump(y, open("y", "wb"))
+    dump(X, open("X", "wb"))
+    dump(y, open("y", "wb"))
 
-    X = load(open("X", "rb"))
-    y = load(open("y", "rb"))
+    # X = load(open("X", "rb"))
+    # y = load(open("y", "rb"))
 
     # Scale features
     X = scale(X)
