@@ -124,7 +124,7 @@ def centriod_displacement(image):
         scaled_dist = np.linalg.norm(np.array([0.5, 0.5]) - scaled_centriod)
         return scaled_dist
     else:
-        return np.array([0,0])
+        return 0
 
 
 def asymmetry_measures(image):
