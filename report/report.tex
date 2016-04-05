@@ -7,7 +7,8 @@
  right=20mm,
  top=20mm,
  }
-
+ 
+\usepackage{hyperref}
 \usepackage{exercise}
 \usepackage{enumerate}
 \usepackage{graphicx}
@@ -39,7 +40,7 @@ The extracted features capture the properties of shape: its topology and its geo
 
 \begin{itemize}
 	\item Histogram of distance of the medial axis points from borders (\textbf{10 features} corresponding to 10 bins of histogram)
-	\item Histogram of border curvature coefficients}(\textbf{5 features} corresponding to 5 bins of histogram)
+	\item Histogram of border curvature coefficients(\textbf{5 features} corresponding to 5 bins of histogram)
 	\item Scaled area
 	\item Solidity
 	\item Extend
@@ -71,7 +72,7 @@ Each point $p$ of medial axis skeleton has the value $d(p)$ of distance to the b
 
 \subsubsection{Medial axis straight lines}
 
-Python implementation (\texttt{skimage.transform.probabilistic\_hough\_line}) of \textit{Probabilistic Hough Transform} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair $(\rho, \theta)$, where $\rho$ is a length of segment, and $\theta$ is an angle. Hought transform consists of two steps: parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins), and the array representing this grid contains number of pixels close to the respective line, after this the exhaustive search of the parameters with maximum frequency is performed\cite{Kiryati}. Each time you find a pixel close to a particular parametrised line you increment the corresponding value of an array, this step is called incremental step, and it usually dominates the execution time of Hough transform\cite{Kiryati}, so 
+Python implementation (\texttt{skimage.transform.probabilistic\_hough\_line}) of \textit{Probabilistic Hough Transform} \cite{Kiryati} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair $(\rho, \theta)$, where $\rho$ is a length of segment, and $\theta$ is an angle. Hought transform consists of two steps: parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins), and the array representing this grid contains number of pixels close to the respective line, after this the exhaustive search of the parameters with maximum frequency is performed. Each time you find a pixel close to a particular parametrised line you increment the corresponding value of an array, this step is called incremental step, and it usually dominates the execution time of Hough transform, so 
 
 \includegraphics[scale=0.6]{camel_764.png}
 \vspace{12px}
@@ -128,11 +129,9 @@ Two kinds of test were performed on the training dataset:
 \subsection{Robustness and scale/rotation invariance}
 \subsection{Conclusions}
 
-\begin{thebibliography}
+\section{Bibliography}
 
-\bibitem{Kiryati}Kiryati, N., Eldar, Y., & Bruckstein, A. M. (1991). A probabilistic Hough transform. Pattern recognition, 24(4), 303-316.
-
-\end{thebibliography}
-
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}
