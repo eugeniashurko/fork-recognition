@@ -66,6 +66,14 @@ For that we implemented 3 transfomations:
 	\item[Image padding]: The border of the image are just filled with a border of black pixels, in order to avoid problems when the shapes touch the border.
         \item[Shape filling]: The background is detected by the fact that it is the first connected component. Then it is fillend in black and the rest of the image (the main shape) is filled with white. With that we remove all the wholes in the image.
         \item[Smoothing]: The goal of this smoothing is to get rid of the noise at the border of the shape. We apply to the image a median filter, with as neighborhood a disk of a 7px diameter. After few tests, 7px seems to be a good compromise between smoothing and not loosing too much details. 
+        
+        \begin{figure}[h]
+          \begin{center}
+            \includegraphics[scale=0.20]{deer_no_processing.png}
+            \includegraphics[scale=0.20]{deer_with_processing.png}
+            \caption{Example without and with pre-processing}
+          \end{center}
+        \end{figure}
 \end{description}
 
 \subsection{Medial Axis}
