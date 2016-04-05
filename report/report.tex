@@ -54,18 +54,19 @@ The extracted features capture the properties of shape: its topology and its geo
 \end{itemize} 
 
 \subsection{Image preprocessing}
-The images are pre-processed before we extract the features from them. There are two reasons for that:
+The images are pre-processed before we extract the features from them. There are three reasons for that:
 \begin{itemize}
 	\item We want to remove the noise from the image, because our features need to be robust to noise.
         \item We also want to remove the black holes that appears in some images.
-        \item We want the shape to be white and the backgroud black (one of the rats is reversed).
+        \item We want the shape to be white and the background black (one of the rats is reversed).
 \end{itemize}
 
-For that we implemented 3 transfomations:
+For that we implemented 3 transformations:
 \begin{description}
 	\item[Image padding]: The border of the image are just filled with a border of black pixels, in order to avoid problems when the shapes touch the border.
-        \item[Shape filling]: The background is detected by the fact that it is the first connected component. Then it is fillend in black and the rest of the image (the main shape) is filled with white. With that we remove all the wholes in the image.
-        \item[Smoothing]: The goal of this smoothing is to get rid of the noise at the border of the shape. We apply to the image a median filter, with as neighborhood a disk of a 7px diameter. After few tests, 7px seems to be a good compromise between smoothing and not loosing too much details. 
+        \item[Shape filling]: The background is detected by the fact that it is the first connected component. Then it is filled in black and the rest of the image (the main shape) is filled with white. With that we remove all the wholes in the image.
+        \item[Smoothing]: The goal of this smoothing is to get rid of the noise at the border of the shape. We apply to the image a median filter, with as neighbourhood a disk of a 7px diameter. After few tests, 7px seems to be a good compromise between smoothing and not loosing too much details. \\
+        A median filter is a local filter which, for each pixel, replaces its colour by the colour of the median pixel in some shape around it (here a disk).
         
         \begin{figure}[h]
           \begin{center}
@@ -77,7 +78,9 @@ For that we implemented 3 transfomations:
 \end{description}
 
 \subsection{Medial Axis}
+We first generate the medial axis skeleton. The scikit implementation \cite{medial_axis} follows what was done in the lecture, adding an information to each point $p$: its distance to the border $d(p)$. This distance could also be seen as the radius of the maximal incircle with center $p$.
 
+Then we try to extract some numerical features from this skeleton, which are all made to be scale-invariant (all features from skeleton are naturally rotation-invariant).
 
 \includegraphics[scale=0.25]{fork_75.png}
 \includegraphics[scale=0.25]{cup_476.png}
@@ -89,11 +92,24 @@ For that we implemented 3 transfomations:
 
 \subsubsection{Histogram of distance of the medial axis points from borders}
 
-Each point $p$ of medial axis skeleton has the value $d(p)$ of distance to the border  assigned to it, this distance may also be seen as the radius of the maximal incircle with a center in $p$, and, in general, characterises the local thinkness of the shape in this point. Histogram of the skeleton distaces was used as a feature for our shape description, and it gives us the information about the distribution of local thinkness of the given shape.
+The distance $d(p)$ characterizes the local thickness of the shape at the point $p$ of the skeleton. Thus our first feature is an histogram of the distances along the skeleton.
+
+This histogram is cut into 10 bins, which are all normalized to be scale-invariant (only \textbf{the proportion} of pixels in each bins count instead of \textbf{the number} of pixels).
 
 \subsubsection{Medial axis straight lines}
+The second feature we propose is to decompose the skeleton into straight lines, ans the build an histogram of the size of the straights lines.
+The idea of this feature is that the sizes of the straight lines tend to indicate if the object is "straight" or "curved", indeed if it is curved, there will be no long straight lines in its skeleton.
 
-Python implementation (\texttt{skimage.transform.probabilistic\_hough\_line}) of \textit{Probabilistic Hough Transform} \cite{Kiryati} was used to detect straight lines in medial axis skeleton. In this method straight line is represented by the segment perpendicular to it, parametrised by a pair $(\rho, \theta)$, where $\rho$ is a length of segment, and $\theta$ is an angle. Hought transform consists of two steps: parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins), and the array representing this grid contains number of pixels close to the respective line, after this the exhaustive search of the parameters with maximum frequency is performed. Each time you find a pixel close to a particular parametrised line you increment the corresponding value of an array, this step is called incremental step, and it usually dominates the execution time of Hough transform, so 
+We make this feature scale-invariant by, again, normalizing the histogram obtained (divided into 5 bins).
+
+Python implementation (\texttt{skimage.transform.probabilistic\_hough\_line}) of \textit{Probabilistic Hough Transform} \cite{Kiryati} was used to do this. \\
+In this method, a straight line is represented by the segment perpendicular to it, parametrized by a pair $(\rho, \theta)$, where $\rho$ is a length of segment, and $\theta$ is an angle. \\
+Hought transform consists of two steps: 
+\begin{itemize}
+  \item Parameter's plane of $(\rho, \theta)$ is divided into discrete grid (by parameter histogram bins). The array representing this grid contains number of pixels which are the closest to the respective line.
+  \item An exhaustive search of the parameters with maximum frequency is performed. Each time a pixel close to a particular parametrized line is found, the corresponding value is incremented in the array.\\
+  This step is called \textit{incremental step}, it usually dominates the execution time of Hough transform. So, %TODO
+\end{itemize}
 
 \includegraphics[scale=0.6]{camel_764.png}
 \vspace{12px}
