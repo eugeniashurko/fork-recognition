@@ -32,11 +32,11 @@ for ((i=0; i < $NBIMGTESTS; i++)); do
             ANGLE=$((rand48()*3.1415))
             SCALE=$((rand48()*3))
             NOISE=$((rand48()*MAXNOISE))
-            ./bin/imgRotate -i $IMGNAME -o tmp.pgm -a $ANGLE 2>/dev/null
-            ./bin/imgScale -i tmp.pgm -o tmp2.pgm -s $SCALE 2>/dev/null
-            ./bin/imgAddNoise -i tmp2.pgm -o tmp.pgm -n $NOISE 2>/dev/null
+            ./bin/imgRotate -i $IMGNAME -o tmpN.pgm -a $ANGLE 2>/dev/null
+            ./bin/imgScale -i tmpN.pgm -o tmpN2.pgm -s $SCALE 2>/dev/null
+            ./bin/imgAddNoise -i tmpN2.pgm -o tmpN.pgm -n $NOISE 2>/dev/null
 
-            DIST=`$SIMILARYPROG distance.py $IMGNAME tmp.pgm`
+            DIST=`$SIMILARYPROG distance.py $IMGNAME tmpN.pgm`
             sum=$(( $sum + $DIST))
             variance=$(( $variance + $DIST*$DIST ))
             echo "Similarity= "$DIST
