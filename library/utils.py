@@ -58,7 +58,7 @@ def trace_border(im, connectivity=4):
 
     background_pixel = padded_im[0][0]
     current_pixel = padded_im[0][0]
-    start = padded_im[0][0]
+    start = padded_im[1][1]
 
     # find starting pixel
     for i in range(padded_im.shape[0]):
