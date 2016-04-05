@@ -38,11 +38,22 @@ Project report
 The extracted features capture the properties of shape: its topology and its geometry. In total, 38 features were developed in total:
 
 \begin{itemize}
-	\item Lalal
+	\item Histogram of distance of the medial axis points from borders (\textbf{10 features} corresponding to 10 bins of histogram)
+	\item Histogram of border curvature coefficients}(\textbf{5 features} corresponding to 5 bins of histogram)
+	\item Scaled area
+	\item Solidity
+	\item Extend
+	\item Scaled major axis length
+	\item Scaled major axis length
+	\item Histogram of medial axis straight lines (\textbf{5 features} corresponding to 5 bins of histogram)
+	\item Number of branches of medial axis skeleton
+	\item Number of branched points of medial axis skeleton
+	\item Scaled centroid displacement
 \end{itemize} 
 
-\subsection{Medial Axis}
+\subsection{Image preprocessing}
 
+\subsection{Medial Axis}
 
 
 \includegraphics[scale=0.25]{fork_75.png}
@@ -76,6 +87,8 @@ To the quantive features of the skeleton the number of branches (number of end p
 \includegraphics[scale=0.26]{guitar_centroid.png}
 \includegraphics[scale=0.26]{tree_centroid.png}
 
+\subsection{Assymetry measures}
+Distances from original image to its horizontal and vertical flips, to rotations for $k*\frac{\pi}/4$
  
 \section{Classification models}
 
@@ -101,8 +114,6 @@ Two kinds of test were performed on the training dataset:
 	\hline
   \end{tabular}
 \end{center}
-
-
 
 
 \section{Results and Discussions}
