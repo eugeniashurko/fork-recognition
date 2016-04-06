@@ -15,6 +15,10 @@
 \usepackage{subfig}
 \usepackage{listings}
 
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+
 \graphicspath{ {images/} }
 
 \lstset{language=python, firstline=37, lastline=45, title={Listing 1: Data structures for cellular automaton}}
@@ -34,7 +38,7 @@ Project report
 
 \section{Introduction}  
 
-There is a great interest in a problem of shape matching and shape recognition \cite{Zhang20041}. We propose our solution to this problem based on Machine Learning techniques applied to global shape desciptors.
+There is a great interest in a problem of shape matching and shape recognition \cite{Zhang20041}. We propose a solution to this problem based on Machine Learning techniques applied to global shape descriptors.
 
 To build a global shape descriptor which would capture geometry and topology of the shapes in a given class various contour-based and region-based features were assembled into a global bag-of-features.
 
@@ -143,13 +147,19 @@ We also extract some quantitative features from skeletons: number of branches an
 
 These features are not normalized because they are already scale-invariant.
 
-To do that, we use an algorithm to decompose the skeleton into a graph.
+To do that, we use an algorithm to decompose the skeleton into a graph. %TODO
 
-\subsection{Border Curvature}
-\subsubsection{Histogram of border curvature coefficients}
 
 \subsection{Volumetric Features}
+We also extract some features about the global shape.
+
 \subsubsection{Scaled area}
+We are interested in a feature representing the area of the object. The problem is that the surface of the shape is note a scale-invariant variable.
+
+To solve this, our feature is:
+$$\frac{\text{surface}}{\text{perimeter}^2}$$
+which is scale-invariant (if the size is multiplied by $x$, the surface is multiplied by $x^2$ and so for $\text{perimeter}^2$).
+
 \subsubsection{Solidity and extend}
 \subsubsection{Scaled major and minor axes length}
 \subsubsection{Scaled centroid displacement}
