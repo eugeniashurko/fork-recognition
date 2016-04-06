@@ -15,6 +15,5 @@ cp pip_req.txt dist/
 cp classes.csv dist/
 
 cp library/*.py dist/library/
-cp bin/* dist/bin/
 
 #cp database dist/database
