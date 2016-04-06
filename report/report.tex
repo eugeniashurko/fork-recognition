@@ -52,7 +52,6 @@ The following Python tools were used on a different stages of project:
 \end{itemize}
 
 \subsection{How to run our scripts}
-
 First, you need \href{https://www.continuum.io/downloads}{\textbf{Anaconda}} to be installed on your computer.
 
 Then, run the script \texttt{install\_dependencies.sh}, which will use pip to install all missing dependencies.
@@ -66,7 +65,7 @@ After that, compile the binary utilities needed for the scripts:\\
 
 Now, you have several python scripts available.
 
-\textbf{We recommend to run the quick version of the scripts}. The behavior is the same, but the quick version does not uses "slow" features. Results are quite better with the slow version, but execution time is very long, so it is not very usable for large database. Moreover, the quick version stays very strong on classification.
+\textbf{We recommend to run the quick version of the scripts}. The behavior is the same, but the quick version does not computes "slow" features. Results are quite better with the slow version, but execution time is very long, so it is not very usable for large database. Moreover, the quick version stays very strong on classification.
 
 \paragraph{distance.py} Usage: \texttt{python3 distance.py img1.pgm img2.pgm}
 
@@ -113,7 +112,6 @@ The extracted features capture the properties of shape: its topology and its geo
 \end{itemize} 
 
 \subsection{Image preprocessing}
-
 The images are pre-processed before we extract the features from them. There are three reasons for that:
 \begin{itemize}
 	\item We want to remove the noise from the image, because our features need to be robust to noise.
@@ -159,7 +157,6 @@ The distance $d(p)$ characterizes the local thickness of the shape at the point 
 This histogram is cut into 10 bins, which are all normalized to be scale-invariant (only \textbf{the proportion} of pixels in each bins count instead of \textbf{the number} of pixels).
 
 \subsubsection{Medial axis straight lines}
-
 The second feature we propose is to decompose the skeleton into straight lines, ans the build an histogram of the size of the straights lines.
 The idea of this feature is that the sizes of the straight lines tend to indicate if the object is "straight" or "curved", indeed if it is curved, there will be no long straight lines in its skeleton.
 
@@ -186,7 +183,6 @@ Detecting the straight lines of our medial axis skeleton helps us to capture its
 We have used as a subset of our features the histogram (5 bins) of the lengths of the detected straight lines, which characterizes the distribution of straight elements of medial axis skeleton for the given image.
 
 \subsubsection{Quantitative features of skeleton}
-
 We also extract some quantitative features from skeletons: number of branches and number of branched points (points of skeleton where the branches start).
 
 These features are not normalized because they are already scale-invariant.
@@ -220,7 +216,6 @@ where value 1 represents pixel that belongs to skeleton, 0 one that does not, an
 We also extract some features about the global shape.
 
 \subsubsection{Scaled area}
-
 We are interested in a feature representing the area of the object. The problem is that the surface of the shape is note a scale-invariant variable.
 
 To solve this, our feature is:
@@ -228,31 +223,15 @@ $$\frac{\text{surface}}{\text{perimeter}^2}$$
 which is scale-invariant (if the size is multiplied by $x$, the surface is multiplied by $x^2$ and so for $\text{perimeter}^2$).
 
 \subsubsection{Solidity and extend}
-\begin{description}
-  \item[Solidity] is the ratio of pixels in the shape to pixels of its convex hull. It represents "how convex" the shape is, how close it is to its convex hull.\\
-  It is already scale-invariance since it is a ration of surfaces.
-  \item[Extend] is the ratio of pixels in the shape to pixels of its bounding box. This one represents how close the shape is to a rectangle.
-\end{description}
-
 \subsubsection{Scaled major and minor axes length}
-
-The major and minor axes length are the lengths of the axis of the ellipse representing the shape. They provides informations about the "width" and "height" of the shape.
-
-We normalize them to let the be scale-invariant by dividing them by the perimeter of the shape.
-
 \subsubsection{Scaled centroid displacement}
-
-This feature is the distance between the center of mass of the shape and the center of mass of th bounding box (see illustrations below). It represents how the shape is "balanced" For example the tree below have a much uniform repartition than the guitar.
-
-This one is also made scale-invariant by dividing it by the perimeter of the shape.
 
 \includegraphics[scale=0.26]{fork_centroid.png}
 \includegraphics[scale=0.26]{guitar_centroid.png}
 \includegraphics[scale=0.26]{tree_centroid.png}
 
-
 \subsection{Asymmetry measures}
-It is an array of distances between the image and rotations (angles $k\frac{\pi}{4}$) and flips of this image. It represents how the shape is symmetric, and naturally "rotation-invariant".
+Distances from original image to its horizontal and vertical flips, to rotations for $k*\frac{\pi}{4}$
  
 \section{Classification models}
 
@@ -272,7 +251,17 @@ Choice of the number of neighbours $k$ that take a part in voting for class assi
 
 We used \texttt{sklearn.neighbors.KNeighborsClassifier()} implementation of K-Nearest Neighbors Classifier.
  
-\textit{Support Vector Machines Classifier} is
+\textit{Support Vector Machines Classifier (SVM)} \cite{svm}. This machine learning method finds a separation hyperplane for the points in the given dataset, and tries to find this hyperplane is such a way that the distance between training set points and hyperplane is maximised. 
+
+Depending on the kernel chosen for the SVM model (in our case we try two kernels: linear $\langle x, x'\rangle$ and radial basis function $\exp(-\gamma |x-x'|^2)$), the values of two paramaters need to be chose: $C$ and $\gamma$.
+
+
+
+ The gamma parameters can be seen as the inverse of the radius of influence of samples selected by the model as support vectors.
+
+The C parameter trades off misclassification of training examples against simplicity of the decision surface. A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly by giving the model freedom to select more samples as support vectors.
+
+
 
 Two kinds of test were performed on the training dataset:
 \begin{itemize}
@@ -297,11 +286,7 @@ Parameters for SVM classifiers were chosen using the grid search according to th
 
 The following plot illustrates, in general, the confusion matrix between our classes and shows that for some classes classifier predicts more accurately then for others:
 
-\begin{figure}
-  \begin{center}
-    \includegraphics[scale=0.6]{confusion_matrix.png} 
-  \end{center}
-\end{figure}
+\includegraphics[scale=0.6]{confusion_matrix.png} 
 
 The figures below are a part of more scaled version of confusion matrix, where we can see, for example, that for some \textit{"device"} classes the accuracy is very high and for others vise versa. Figure on the right shows us that in some cases the classifier confuses between shapes of a class \textit{"fork"} and ones of a class \textit{"spring"}, as well as \textit{"frog"} and \textit{"teddy"}.   
 
@@ -309,7 +294,6 @@ The figures below are a part of more scaled version of confusion matrix, where w
 \includegraphics[scale=0.4]{fork_fish.png} 
 
 \section{Discussions}
-
 Presented above feature vector is normalized and can be used as a shape descriptor  
 
 \subsection{Performance}
