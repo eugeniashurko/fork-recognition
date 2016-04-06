@@ -248,16 +248,23 @@ This one is also made scale-invariant by dividing it by the perimeter of the sha
 
 \subsection{Asymmetry measures}
 It is an array of distances between the image and rotations (angles $k\frac{\pi}{4}$) and flips of this image. It represents how the shape is symmetric, and naturally "rotation-invariant".
-
  
 \section{Classification models}
 
 Machine Learning techniques were used to build the model of shape recognition.  
 
-\textit{Gaussian Naive Bayes Classifier} is
+\textit{Gaussian Naive Bayes Classifier}. Naive Bayes \cite{Bayes} is a supervised classification method which is based on Bayes' theorem and makes an assumption that the features are pairwise independent:
 
-\textit{K-Nearest Neighbors Classifier} is
+\begin{equation}
+	P(y|x_{1} ... x_{n}) = \frac{P(y)P(x_{1} ... x_{n}|y)}{P(x_{1} ... x_{n})}
+\end{equation}
 
+Here $x_{1} ... x_{n}$ is a feature vector, and $y$ is the class label. Our features are continuous, so we use Gaussian modification of Naive Bayes that assumes that the likelyhood of a feature follows the normal distribution.
+
+\textit{K-Nearest Neighbors Classifier}\cite{neighb}. 
+
+Choice of the number of neighbours $k$ that take a part in voting for class assignment is highly dependent on data (larger $k$ reduces noise, but make the classification boundaries less strict). So, we have chosen to take values of $k=5$ and $k=20$ neighbours to analyse the classifation results on our dataset.
+ 
 \textit{Support Vector Machines Classifier} is
 
 Two kinds of test were performed on the training dataset:
@@ -270,7 +277,7 @@ Two kinds of test were performed on the training dataset:
   \begin{tabular}{| l | c | c |}
     \hline
     \textbf{Classifier} & \textbf{Score out of one} & \textbf{Score out of ten}\\ \hline \hline
-    \textit{Gaussian Naive Bayes} & \textit{0.81} & \textit{0.97} \\ \hline
+    Gaussian Naive Bayes & 0.81 & 0.97 \\ \hline
 	K-Nearest Neighbours (5 neighbours) & 0.71 & 0.95\\ \hline
 	K-Nearest Neighbours (20 neighbours) & 0.60 & 0.98 \\ \hline
 	SVM Classifier (linear kernel, C=1) & 0.76 & 0.93 \\ \hline
