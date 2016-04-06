@@ -94,11 +94,10 @@ Normally you don't have to run this script, unless you want to run the slow vers
 
 \section{Feature Engineering}
 
-The extracted features capture the properties of shape: its topology and its geometry. In total, 38 features were developed:
+The extracted features capture the properties of shape: its topology and its geometry. In total, 33 features were developed:
 
 \begin{itemize}
 	\item Histogram of distance of the medial axis points from borders (\textbf{10 features} corresponding to 10 bins of histogram)
-	\item Histogram of border curvature coefficients(\textbf{5 features} corresponding to 5 bins of histogram)
 	\item Scaled area
 	\item Solidity
 	\item Extend
@@ -125,15 +124,14 @@ For that we implemented 3 transformations:
         \item[Shape filling]: The background is detected by the fact that it is the first connected component. Then it is filled in black and the rest of the image (the main shape) is filled with white. With that we remove all the wholes in the image.
         \item[Smoothing]: The goal of this smoothing is to get rid of the noise at the border of the shape. We apply to the image a median filter, with as neighbourhood a disk of a 7px diameter. After few tests, 7px seems to be a good compromise between smoothing and not loosing too much details. \\
         A median filter is a local filter which, for each pixel, replaces its colour by the colour of the median pixel in some shape around it (here a disk).
-        
-        \begin{figure}[h]
-          \begin{center}
-            \includegraphics[scale=0.20]{deer_no_processing.png}
-            \includegraphics[scale=0.20]{deer_with_processing.png}
-            \caption{Example without and with pre-processing}
-          \end{center}
-        \end{figure}
+
 \end{description}
+
+The following example shows the image before and after preporcessing step:
+
+\includegraphics[scale=0.20]{deer_no_processing.png}
+\includegraphics[scale=0.20]{deer_with_processing.png}
+          
 
 \subsection{Medial Axis}
 We first generate the medial axis skeleton. The scikit implementation \cite{medial_axis} follows what was done in the lecture, adding an information to each point $p$: its distance to the border $d(p)$. This distance could also be seen as the radius of the maximal incircle with center $p$.
