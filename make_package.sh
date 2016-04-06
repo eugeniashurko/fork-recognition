@@ -12,6 +12,7 @@ cp y_quick dist/
 cp script* dist/
 cp install_dependencies.sh dist/
 cp pip_req.txt dist/
+cp classes.csv dist/
 
 cp library/*.py dist/library/
 cp bin/* dist/bin/
