@@ -56,13 +56,34 @@ First, you need \href{https://www.continuum.io/downloads}{\textbf{Anaconda}} to 
 
 Then, run the script \texttt{install\_dependencies.sh}, which will use pip to install all missing dependencies.
 
-Then, you have several python scripts available:
-\begin{itemize}
-  \item class.py, learn.py
-  \item quick\_class.py, quick\_learn.py
-  \item distance.py
-\end{itemize}
+Now, you have several python scripts available.
 
+\textbf{We recommend to run the quick version of the scripts}. The behavior is the same, but the quick version does not computes "slow" features. Results are quite better with the slow version, but execution time is very long, so it is not very usable for large database. Moreover, the quick version stays very strong on classification.
+
+\paragraph{distance.py} Usage: \texttt{python3 distance.py img1.pgm img2.pgm}
+
+This script computes the distance between the two pictures. It is simply the $l_2$ norm of the difference of the feature vectors of the images (see below for the precise definition of these features).
+
+The 3 Robustness scripts are modified to execute this distance script.
+
+\paragraph{class.py, quick\_class.py}
+Usage: \texttt{python3 quick\_class.py img.pgm}
+
+This script outputs the probability of \texttt{img.pgm} to be in each class. 
+
+To do so, it uses a classification model, which is trained using data stored into \texttt{X\_quick} and \texttt{y\_quick} files (\texttt{X} and \texttt{y} for slow version. 
+Note that to run \textit{class.py}, you will to perform the learning by yourself !). These files are provided to you, but you can re-generate them using the script below.
+
+The scripts \texttt{scriptClassification.sh} and \texttt{scriptQuickClassification.sh} are modified to use this classifier.
+
+\paragraph{learn.py, quick\_learn.py}
+Usage: \texttt{python3 quick\_learn.py}
+
+This script generates the files \texttt{X\_quick} and \texttt{y\_quick} (or \texttt{X} and \texttt{y}) from a database stored into the directory \texttt{database/}.
+These files contains all the features extracted from the images of the directory \texttt{database/}. It is useful to store them in order to not extract these features each time you want to use the classifier (this is quite long, even for the quick version).
+All images from \texttt{database/} are used for the learning when you run this script !
+
+Normally you don't have to run this script, unless you want to run the slow version, or try the script to be sure it works.
 
 \section{Feature Engineering}
 
