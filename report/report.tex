@@ -309,10 +309,27 @@ The figures below are a part of more scaled version of confusion matrix, where w
 \includegraphics[scale=0.4]{fork_fish.png} 
 
 \section{Discussions}
-Presented above feature vector is normalized and can be used as a shape descriptor  
+We have impelemented following three kinds of feature extraction:
+
+\begin{enumerate}
+
+\item Full feature set of 33 features described above implemented in 
+
+\texttt{library.feature\_extarction.extract\_features}.
+
+\item Subset of 11 features excluding the features that showed bad performance in terms of time is extarcted with \texttt{library.feature\_extarction.extract\_quick\_features} (includes only histogram of medial axis skeleton distances and volumetric measures).
+
+\item Subset of 21 features which are normalized and whose vector can be used to find a similarities between two images calculating the distance between two respective feature vectors (excluding not normalized features like number of branches of skeleton etc) (\texttt{library.feature\_extarction.extarct\_dist\_features}).
+
+\end{enumerate} 
+
 
 \subsection{Performance}
+Slow
 \subsection{Robustness and scale/rotation invariance}
+Rubust to scale and rotation and noise:
+- Hurt me
+- quick
 
 \bibliographystyle{plain}
 \bibliography{biblio}
