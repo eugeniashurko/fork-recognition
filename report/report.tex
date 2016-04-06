@@ -261,9 +261,11 @@ Machine Learning techniques were used to build the model of shape recognition.
 
 Here $x_{1} ... x_{n}$ is a feature vector, and $y$ is the class label. Our features are continuous, so we use Gaussian modification of Naive Bayes that assumes that the likelyhood of a feature follows the normal distribution.
 
-\textit{K-Nearest Neighbors Classifier}\cite{neighb}. 
+\textit{K-Nearest Neighbors Classifier}\cite{neighb}. To assign the class label this method uses a simple majority vote of the $k$ nearest neighbours to the provided sample. To find $k$ nearest neighbors different distance metrics may be used (we use standard Euclidean metric). 
 
 Choice of the number of neighbours $k$ that take a part in voting for class assignment is highly dependent on data (larger $k$ reduces noise, but make the classification boundaries less strict). So, we have chosen to take values of $k=5$ and $k=20$ neighbours to analyse the classifation results on our dataset.
+
+We used \texttt{sklearn.neighbors.KNeighborsClassifier()} implementation of K-Nearest Neighbors Classifier.
  
 \textit{Support Vector Machines Classifier} is
 
