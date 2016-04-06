@@ -32,9 +32,9 @@ def skeleton_distances_histogram(skeleton):
     non_zero_dist = skeleton[skeleton != 0.0]
     frequencies = np.histogram(non_zero_dist, bins=10)[0]
     # normalize
-    if len(frequencies) > 0:
+    try:
         norm_frequencies = frequencies / sum(frequencies)
-    else:
+    except RuntimeWarning:
         norm_frequencies = [0]*10
     
     return norm_frequencies
