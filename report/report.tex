@@ -214,15 +214,32 @@ where value 1 represents pixel that belongs to skeleton, 0 one that does not, an
 We also extract some features about the global shape.
 
 \subsubsection{Scaled area}
-We are interested in a feature representing the area of the object. The problem is that the surface of the shape is note a scale-invariant variable.
+
+We are interested in a feature representing the area of the object. The problem is that the surface of the shape is not a scale-invariant variable.
 
 To solve this, our feature is:
 $$\frac{\text{surface}}{\text{perimeter}^2}$$
 which is scale-invariant (if the size is multiplied by $x$, the surface is multiplied by $x^2$ and so for $\text{perimeter}^2$).
 
 \subsubsection{Solidity and extend}
+\begin{description}
+  \item[Solidity] is the ratio of pixels in the shape to pixels of its convex hull. It represents "how convex" the shape is, how close it is to its convex hull.\\
+  It is already scale-invariance since it is a ration of surfaces.
+  \item[Extend] is the ratio of pixels in the shape to pixels of its bounding box. This one represents how close the shape is to a rectangle.
+\end{description}
+
 \subsubsection{Scaled major and minor axes length}
+
+The major and minor axes length are the lengths of the axis of the ellipse representing the shape. They provides informations about the "width" and "height" of the shape.
+
+We normalize them to let the be scale-invariant by dividing them by the perimeter of the shape.
+
 \subsubsection{Scaled centroid displacement}
+
+This feature is the distance between the center of mass of the shape and the center of mass of th bounding box (see illustrations below). It represents how the shape is "balanced" For example the tree below have a much uniform repartition than the guitar.
+
+This one is also made scale-invariant by dividing it by the perimeter of the shape.
+
 
 \includegraphics[scale=0.26]{fork_centroid.png}
 \includegraphics[scale=0.26]{guitar_centroid.png}
