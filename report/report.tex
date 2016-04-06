@@ -57,7 +57,12 @@ First, you need \href{https://www.continuum.io/downloads}{\textbf{Anaconda}} to 
 
 Then, run the script \texttt{install\_dependencies.sh}, which will use pip to install all missing dependencies.
 
-After that, copy \textbf{your} binary files \texttt{getRank}, \texttt{imgAddNoise}, \texttt{imgRotate} and \texttt{imgScale} in the directory \texttt{bin/}.
+After that, compile the binary utilities needed for the scripts:\\
+\texttt{cd bin}\\
+\texttt{cmake -DDGtal\_DIR=YOUR\_DGTAL\_DIR}\\
+\texttt{make}
+
+\bigskip
 
 Now, you have several python scripts available.
 

@@ -14,6 +14,10 @@ cp install_dependencies.sh dist/
 cp pip_req.txt dist/
 cp classes.csv dist/
 
+cp bin/CMakeLists.txt dist/bin/
+cp bin/*.cpp dist/bin/
+
+
 cp library/*.py dist/library/
 
-#cp database dist/database
+cp -r database dist/database

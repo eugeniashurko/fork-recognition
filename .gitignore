@@ -15,4 +15,3 @@ tmp*.pgm
 *.out
 *.synctex.gz
 scores_tmp.txt
-bin/
