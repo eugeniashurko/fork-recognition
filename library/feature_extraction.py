@@ -32,7 +32,10 @@ def skeleton_distances_histogram(skeleton):
     non_zero_dist = skeleton[skeleton != 0.0]
     frequencies = np.histogram(non_zero_dist, bins=10)[0]
     # normalize
-    norm_frequencies = frequencies / sum(frequencies)
+    if len(frequencies) > 0:
+        norm_frequencies = frequencies / sum(frequencies)
+    else:
+        norm_frequencies = [0]*10
     
     return norm_frequencies
 
@@ -45,7 +48,7 @@ def shape_measures(image):
     * Major and minor axes lengths
     * Centroid displacement
 
-    Look at http://scikit-image.org/docs/dev/api/skimage.measure.html for more informations about these measures."""
+    Look at 'http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops' for more informations about these measures."""
     # make image binary
     new_im = image
     new_im[new_im > 0] = 1
@@ -194,6 +197,22 @@ def extract_dist_features(image):
         skeleton_dist_hist,
         measures,
         lines_length,
+        [centroid_dist],
+    ))
+    
+    return features
+
+
+def extract_quick_features(image):
+    """Extracts all quick features (to have a quick learning)."""
+    im = preprocess_image(image)
+    skeleton_dist_hist = skeleton_distances_histogram(im)
+    measures = shape_measures(im)
+    centroid_dist = centriod_displacement(im)
+    
+    features = np.concatenate((
+        skeleton_dist_hist,
+        measures,
         [centroid_dist],
     ))
     

@@ -1,4 +1,4 @@
-""""Classifies images using the dataset to train the model (features to be used mus be stored into files X,y)."""
+""""Classifies images using the QUICK dataset to train the model (features to be used mus be stored into files X,y)."""
 import numpy as np
 from skimage.io import imshow
 from skimage.io import imread
@@ -16,7 +16,7 @@ from sklearn.svm import SVC
 from sklearn.preprocessing import scale
 
 from library.data_utils import load_labels
-from library.feature_extraction import extract_features
+from library.feature_extraction import extract_quick_features
 from library.feature_extraction import preprocess_image
 
 from sys import argv
@@ -28,8 +28,8 @@ if __name__ == '__main__':
     # load model
     X = np.array([])
     y = np.array(labels)
-    X = load(open("X", "rb"))
-    y = load(open("y", "rb"))
+    X = load(open("X_quick", "rb"))
+    y = load(open("y_quick", "rb"))
 
 
     # Check arguments
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         # Process image
         image = imread(argv[1], as_grey=True)
         p_image = preprocess_image(image)
-        features = extract_features(p_image)
+        features = extract_quick_features(p_image)
 
         # resize the features to "normalize" them compared the feature dataset
         large_X = np.concatenate((X, [features]))
