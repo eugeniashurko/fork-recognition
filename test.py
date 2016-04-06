@@ -58,20 +58,20 @@ if __name__ == '__main__':
     # Tests for features extraction pipeline
     X = []
 
-    # print("FEATURE EXTRACTION....")
-    for i, image in enumerate(images):
-        X.append(extract_features(image))
+    # # print("FEATURE EXTRACTION....")
+    # for i, image in enumerate(images):
+    #     X.append(extract_features(image))
 
     # # -------------
     # # Machine learning pasrt
     X = np.array(X)
     y = np.array(labels)
 
-    dump(X, open("X", "wb"))
-    dump(y, open("y", "wb"))
+    # dump(X, open("X", "wb"))
+    # dump(y, open("y", "wb"))
 
-    # X = load(open("X", "rb"))
-    # y = load(open("y", "rb"))
+    X = load(open("X", "rb"))
+    y = load(open("y", "rb"))
 
     # Scale features
     X = scale(X)
