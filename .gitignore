@@ -2,3 +2,17 @@ venv/*
 experiments/.ipynb_checkpoints/*
 .ipynb_checkpoints/*
 library/__pycache__/*
+*~
+tmp*.pgm
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.out
+*.synctex.gz
+scores_tmp.txt
+bin/
