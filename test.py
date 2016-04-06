@@ -1,13 +1,12 @@
 """Library test."""
 # import matplotlib
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # from matplotlib import cm
 
 import numpy as np
 # from skimage.io import imshow
 
 from pickle import dump, load
-from rosetta.parallel.parallel_easy import imap_easy
 
 # from library.utils import medial_axis_skeleton
 # from library.utils import skeleton_lines
@@ -20,6 +19,7 @@ from sklearn import cross_validation
 from sklearn.preprocessing import scale
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.feature_selection import SelectFromModel
+from sklearn.metrics import confusion_matrix
 
 from library.data_utils import load_database
 from library.feature_extraction import extract_features
@@ -32,28 +32,38 @@ def custom_test(clf, X, y):
     for i, sample_proba in enumerate(proba):
         classes = np.argsort(sample_proba)[::-1][:10]
         labels = clf.classes_[classes]
-        # print(y[i])
-        # print(labels)
         if y[i] in labels:
             score += 1.0
     print(score)
     return score / proba.shape[0]
 
 
+# Util for plotting the confusion matrix
+# from http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
+def plot_confusion_matrix(cm, target_names, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(target_names))
+    plt.xticks(tick_marks, target_names, rotation=45)
+    plt.yticks(tick_marks, target_names)
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+
 if __name__ == '__main__':
     images, labels = load_database("database", "classes.csv")
 
-    # Attempt to paralellize
-    # X = list(imap_easy(extract_features, images, 4, 5))
-
     # Tests for features extraction pipeline
     X = []
+
     # print("FEATURE EXTRACTION....")
     for i, image in enumerate(images):
-         X.append(extract_features(image))
+        X.append(extract_features(image))
 
     # # -------------
-    # # Machine learning
+    # # Machine learning pasrt
     X = np.array(X)
     y = np.array(labels)
 
@@ -129,11 +139,6 @@ if __name__ == '__main__':
     print("TEACHERS TEST:")
     print(custom_test(clf, X_test, y_test))
 
-    model = SelectFromModel(clf, prefit=True)
-    X_new = model.transform(X)
-    print(X_new.shape)
-    print(clf.estimators_[0].feature_importances_)
-
     print("\n\nSVC RBF kernel:")
     print("++++++++++++")
 
@@ -150,3 +155,12 @@ if __name__ == '__main__':
 
     print("TEACHERS TEST:")
     print(custom_test(clf, X_test, y_test))
+
+    # Here for the selected model we plot confusion matrix
+    y_pred = clf.predict(X_test)
+    target_names = np.unique(labels)
+    cm = confusion_matrix(y_test, y_pred, labels=target_names)
+    np.set_printoptions(precision=2)
+    plt.figure()
+    plot_confusion_matrix(cm, target_names)
+    plt.show()
