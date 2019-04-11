@@ -3,7 +3,7 @@ decorator==4.0.9
 Jinja2~>2.8
 jsonschema==2.4.0
 MarkupSafe==0.23
-mistune==0.7.1
+mistune>=0.8.1
 nbconvert==4.1.0
 nbformat==4.0.1
 numpy==1.10.4
